@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerSection = document.getElementById('register-section');
     const loginSection = document.getElementById('login-section');
 
+    const container = document.querySelector('.container');
+    const registerBtn = document.querySelector('.register-btn');
+    const loginBtn = document.querySelector('.login-btn');
+
+    registerBtn.addEventListener('click', () => {
+        container.classList.add('active');
+    });
+
+    loginBtn.addEventListener('click', () => {
+        container.classList.remove('active');
+    });
+
     // Show register form on page load
     registerSection.classList.add('active');
 
