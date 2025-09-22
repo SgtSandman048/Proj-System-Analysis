@@ -1,15 +1,22 @@
-// Import the express library
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-const port = 3000; // Define the port number
+const port = 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello World! This is the backend.');
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB:', err));
 
-// Start the server and listen on the specified port
+// Use the authentication routes
+app.use('/api/auth', authRoutes);
+
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
