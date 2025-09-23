@@ -74,13 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                alert('Login successful! Token: ' + data.token);
-                // You would typically save the token here
-            } else {
-                alert(data.message || 'Login failed');
-            }
+
         } catch (error) {
             alert('Failed to connect to the server.');
         }
