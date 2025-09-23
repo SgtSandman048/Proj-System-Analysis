@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/user');
+const tradeRoutes = require('./routes/tradeRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -24,6 +25,9 @@ app.use('/api/auth', authRoutes);
 
 // Use the new user routes here, outside of app.listen()
 app.use('/api/user', userRoutes);
+
+// Use the trade routes here, outside of app.listen()
+app.use("/api/trade", tradeRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
