@@ -73,8 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-
-
         } catch (error) {
             alert('Failed to connect to the server.');
         }
