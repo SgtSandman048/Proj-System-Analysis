@@ -5,7 +5,7 @@ We're happy to see you here for whatever reason.
 What's the point
 - IDK either.
 
-Here's for update list
+Here's for checklist
 
 - Frontend
   - Login/Register System: Done
