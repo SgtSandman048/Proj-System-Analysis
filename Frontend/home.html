@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gaming Platform</title>
-    <link rel="stylesheet" href="/Frontend/CSS/stylehome.css">
+    <link rel="stylesheet" href="CSS/stylehome.css">
 </head>
 <body>
     <header class="header">
         <div class="logo">
-            <img src="Image/lastlogoSA.png" alt="Logo" class="logo-icon">
+            <img src="images/lastlogoSA.png" alt="Logo" class="logo-icon">
             
         </div>
         <nav class="nav-items">
-            <img src="Image/bell.png" alt="Notifications" class="nav-icon">
+            <img src="images/bell.png" alt="Notifications" class="nav-icon">
             <a href="#" class="nav-item">
-                <img src="Image/tools.png" alt="Tracks" class="nav-item-icon">
+                <img src="images/tools.png" alt="Tracks" class="nav-item-icon">
                 Tracks
             </a>
             <a href="Website.html" class="nav-item">
-                <img src="Image/shopping-cart.png" alt="Market" class="nav-item-icon">
+                <img src="images/shopping-cart.png" alt="Market" class="nav-item-icon">
                 Market
             </a>
             <div class = "menu-user">
             <div class ="topic"></div>
-            <a href="login.html" class="nav-item">
-                <img src="Image/user.png" alt="Sign In" class="menu-item-icon">
+            <a href="index.html" class="nav-item">
+                <img src="images/user.png" alt="Sign In" class="menu-item-icon">
                 Sign In
             <div class = "submenu">
-                    <div class = "list"><a href ="Setting.html"><img src="Image/settings.png " alt="Setting" class = "nav-item-icon"></a><div style="position: absolute;top: -2px; left: 20px;">settings</div> </div>
+                    <div class = "list"><a href ="Setting.html"><img src="images/settings.png " alt="Setting" class = "nav-item-icon"></a><div style="position: absolute;top: -2px; left: 20px;">settings</div> </div>
                     <div class = "list"><a href ="#"></a>Sign out</div>
                 </div>
             </a>
@@ -44,7 +44,7 @@
                 <div class="game-card">
                     <div class="game-image">
                         <a href="Trading-growagarden.html" class="game-card-link">
-                        <img src="Image/image.jpg" alt="Grow a Garden" class="game-thumbnail">
+                        <img src="images/image.jpg" alt="Grow a Garden" class="game-thumbnail">
                         <div class="game-overlay">
                         </div>
                         </a>
@@ -58,7 +58,7 @@
                 <div class="game-card">
                     <div class="game-image">
                         <a href="Trading-pet.html" class="game-card-link">
-                        <img src="Image/b59b010e30fe377f1be4417ad009d5dfad03707c.png" alt="Pet Simulator" class="game-thumbnail">
+                        <img src="images/b59b010e30fe377f1be4417ad009d5dfad03707c.png" alt="Pet Simulator" class="game-thumbnail">
                         <div class="game-overlay">
                         </div>
                         </a>
@@ -106,6 +106,9 @@
                 }
             });
         });
+         if (!localStorage.getItem('authToken')) {
+        window.location.href = "index.html";
+        }
     </script>
 </body>
 </html>

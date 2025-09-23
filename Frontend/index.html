@@ -46,9 +46,9 @@
         </div>
         <!-- ถ้าจะเก็บ confirm password ไว้ -->
         <div class="input-box">
-            <!-- confirm not work -->
-          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+          <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
           <i class="fa-solid fa-lock"></i>
+          <small id="confirm-error" style="color:red; display:none;">Passwords do not match</small>
         </div>
         <button type="submit" class="btn">Register</button>
         <p>Already have an account? <a href="#" id="show-login">Login</a></p>
