@@ -1,0 +1,10 @@
+{
+  "Red Dragon": {
+    "image": "Image/RedDragon.webp",
+    "description": "Powerful fire breathing dragon"
+  },
+  "Golden Bee": {
+    "image": "Image/GoldenBee.webp",
+    "description": "Rare golden bee specimen"
+  }
+}
