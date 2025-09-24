@@ -52,6 +52,7 @@ router.post("/start", async (req, res) => {
     const trade = new Trade({ item, price, quantity, buyer, seller });
     await trade.save();
     res.json({ message: "Trade started", trade });
+    console.log(`New Trade started`);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -93,6 +94,7 @@ router.post("/:tradeId/confirm", async (req, res) => {
     // ถ้าทั้งคู่ confirm แล้ว → completed
     if (trade.buyerConfirm && trade.sellerConfirm) {
       trade.status = "completed";
+      console.log(`Trade Completed`);
     }
 
     await trade.save();
@@ -114,4 +116,5 @@ router.get("/:tradeId", async (req, res) => {
 });
 
 module.exports = router;
+
 console.log(`Trade Routes Status: Ready`);
