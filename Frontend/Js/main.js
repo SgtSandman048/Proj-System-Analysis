@@ -1,3 +1,16 @@
+
+const container = document.querySelector('.container');
+const registerBtn = document.querySelector('.register-btn');
+const loginBtn = document.querySelector('.login-btn');
+
+
+registerBtn.addEventListener('click',()=>{
+    container.classList.add('active');
+})
+loginBtn.addEventListener('click',()=>{
+    container.classList.remove('active');
+})
+
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
@@ -12,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     registerSection.classList.add('active');
 
     // Toggle between forms
-    showLoginBtn.addEventListener('click', (e) => {
+    /*showLoginBtn.addEventListener('click', (e) => {
         e.preventDefault();
         registerSection.classList.remove('active');
         loginSection.classList.add('active');
@@ -22,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         loginSection.classList.remove('active');
         registerSection.classList.add('active');
-    });
+    });*/
 
     // Register
     registerForm.addEventListener('submit', async (e) => {
