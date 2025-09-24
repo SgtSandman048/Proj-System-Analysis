@@ -20,7 +20,7 @@
 
         /*
         let newItemsData = {};  // เก็บข้อมูล item จาก backend
-
+*/
         async function fetchItemsFromDB() {
     try {
         const res = await fetch('/api/items');  // ✅ backend จะต้องมี route /api/items
@@ -44,7 +44,7 @@
 
 // ✅ เรียกตอนโหลดหน้าเว็บ
 document.addEventListener("DOMContentLoaded", fetchItemsFromDB);
-*/
+
 
 
         // Original JavaScript functionality
@@ -168,9 +168,9 @@ function resetNewModalForm() {
         }
 
 // สมมติว่ามี username จากระบบ login
-const currentUser = "Jeffy";
+// const currentUser = "Jeffy";
 
-/*let currentUser = "Guest"; // ค่า default ถ้าไม่ได้ login
+let currentUser = "Guest"; // ค่า default ถ้าไม่ได้ login
 
 async function fetchCurrentUser() {
     try {
@@ -184,7 +184,7 @@ async function fetchCurrentUser() {
 
 // ดึง user ตอนเปิดหน้าเว็บ
 document.addEventListener("DOMContentLoaded", fetchCurrentUser);
-*/
+
 
 function handleNewSubmit() {
     const price = parseFloat(document.getElementById('newPriceInput').value);
