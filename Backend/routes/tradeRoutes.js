@@ -45,6 +45,73 @@ router.get("/sell", async (req, res) => {
   }
 });
 
+// 🟢 เริ่มการซื้อขายใหม่ (สร้าง Trade)
+router.post("/start", async (req, res) => {
+  try {
+    const { item, price, quantity, buyer, seller } = req.body;
+    const trade = new Trade({ item, price, quantity, buyer, seller });
+    await trade.save();
+    res.json({ message: "Trade started", trade });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 💬 ส่งข้อความในห้องแชท
+router.post("/:tradeId/message", async (req, res) => {
+  try {
+    const { tradeId } = req.params;
+    const { sender, text } = req.body;
+
+    const trade = await Trade.findById(tradeId);
+    if (!trade) return res.status(404).json({ message: "Trade not found" });
+
+    trade.messages.push({ sender, text });
+    await trade.save();
+
+    res.json({ message: "Message sent", trade });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Confirm การซื้อขาย
+router.post("/:tradeId/confirm", async (req, res) => {
+  try {
+    const { tradeId } = req.params;
+    const { username } = req.body;
+
+    const trade = await Trade.findById(tradeId);
+    if (!trade) return res.status(404).json({ message: "Trade not found" });
+
+    // ผู้ซื้อกด Confirm
+    if (trade.buyer === username) trade.buyerConfirm = true;
+
+    // ผู้ขายกด Confirm
+    if (trade.seller === username) trade.sellerConfirm = true;
+
+    // ถ้าทั้งคู่ confirm แล้ว → completed
+    if (trade.buyerConfirm && trade.sellerConfirm) {
+      trade.status = "completed";
+    }
+
+    await trade.save();
+    res.json({ message: "Confirmation updated", trade });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 📌 ดึงข้อมูล Trade + แชท
+router.get("/:tradeId", async (req, res) => {
+  try {
+    const trade = await Trade.findById(req.params.tradeId);
+    if (!trade) return res.status(404).json({ message: "Trade not found" });
+    res.json(trade);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
 console.log(`Trade Routes Status: Ready`);
