@@ -1,5 +1,5 @@
         // Items Database for new modal
-        let newItemsData = {
+        /*let newItemsData = {
     "Hell Fox": {
         image: "images/Hell_Fox.webp",
         description: "Powerful fire breathing dragon"
@@ -8,7 +8,7 @@
         image: "images/PSX_Dominus.webp",
         description: "Rare golden bee specimen"
     }
-};
+};*/
 
         // New modal state
         let newModalState = {
@@ -18,7 +18,7 @@
             quantity: ''
         };
 
-        /*
+        
         let newItemsData = {};  // เก็บข้อมูล item จาก backend
 
         async function fetchItemsFromDB() {
@@ -44,7 +44,7 @@
 
 // ✅ เรียกตอนโหลดหน้าเว็บ
 document.addEventListener("DOMContentLoaded", fetchItemsFromDB);
-*/
+
 
 
         // Original JavaScript functionality
@@ -168,9 +168,9 @@ function resetNewModalForm() {
         }
 
 // สมมติว่ามี username จากระบบ login
-const currentUser = "Jeffy";
+// const currentUser = "Jeffy";
 
-/*let currentUser = "Guest"; // ค่า default ถ้าไม่ได้ login
+let currentUser = "Guest"; // ค่า default ถ้าไม่ได้ login
 
 async function fetchCurrentUser() {
     try {
@@ -184,7 +184,7 @@ async function fetchCurrentUser() {
 
 // ดึง user ตอนเปิดหน้าเว็บ
 document.addEventListener("DOMContentLoaded", fetchCurrentUser);
-*/
+
 
 function handleNewSubmit() {
     const price = parseFloat(document.getElementById('newPriceInput').value);
@@ -300,8 +300,8 @@ function handleNewSubmit() {
     }, 3000);
 }
 //สมมติ การล็อคอิน
-let isLoggedIn = true; // เปลี่ยนเป็น false ถ้า logout
-/*
+// let isLoggedIn = true; // เปลี่ยนเป็น false ถ้า logout
+
 async function updateUserMenu() {
     try {
         const res = await fetch('/api/current-user'); // ✅ backend ต้องเขียน endpoint นี้
@@ -332,4 +332,4 @@ document.getElementById("signOutBtn").addEventListener("click", async function(e
 
 // โหลดหน้ามา → อัปเดตเมนู
 document.addEventListener("DOMContentLoaded", updateUserMenu);
-*/
+

@@ -1,5 +1,5 @@
         // Items Database for new modal
-        let newItemsData = {
+/*        let newItemsData = {
     "Red Dragon": {
         image: "images/RedDragon.webp",
         description: "Powerful fire breathing dragon"
@@ -8,7 +8,7 @@
         image: "images/GoldenBee.webp",
         description: "Rare golden bee specimen"
     }
-};
+};*/
 
         // New modal state
         let newModalState = {
@@ -300,8 +300,8 @@ function handleNewSubmit() {
     }, 3000);
 }
 //สมมติ การล็อคอิน
-let isLoggedIn = true; // เปลี่ยนเป็น false ถ้า logout
-/*
+// let isLoggedIn = true; // เปลี่ยนเป็น false ถ้า logout
+
 async function updateUserMenu() {
     try {
         const res = await fetch('/api/current-user'); // ✅ backend ต้องเขียน endpoint นี้
@@ -332,4 +332,4 @@ document.getElementById("signOutBtn").addEventListener("click", async function(e
 
 // โหลดหน้ามา → อัปเดตเมนู
 document.addEventListener("DOMContentLoaded", updateUserMenu);
-*/
+
