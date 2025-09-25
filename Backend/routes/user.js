@@ -9,3 +9,4 @@ const userController = require('../controllers/userController');
 router.get('/profile', auth, userController.getProfile);
 
 module.exports = router;
+console.log(`Users Routes Status: Ready`);

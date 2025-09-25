@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+
+console.log('Checking Routes ...\n');
+
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/user');
 const tradeRoutes = require('./routes/tradeRoutes');
@@ -22,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URI,{
 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB:', err));
+
 
 // Use the authentication routes here, outside of app.listen()
 app.use('/api/auth', authRoutes);
