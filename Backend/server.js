@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require('http'); // Import the http module
+const WebSocket = require('ws'); // Import the WebSocket library
 
 console.log('Checking Routes ...\n');
 
@@ -19,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI,{
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -34,8 +36,32 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
 // Use the trade routes here, outside of app.listen()
-app.use("/api/trade", tradeRoutes);
+app.use("/api/item", tradeRoutes);
 
-app.listen(port, () => {
+// Create the HTTP server from the Express app
+const server = http.createServer(app);
+
+// Create a WebSocket server attached to the HTTP server
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', ws => {
+  console.log('Client connected.');
+
+  ws.on('message', message => {
+    // Broadcast the message to all other connected clients
+    wss.clients.forEach(client => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message.toString());
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected.');
+  });
+});
+
+// Have the HTTP server listen on the port
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
