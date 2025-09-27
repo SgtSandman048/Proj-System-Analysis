@@ -186,77 +186,120 @@ async function fetchCurrentUser() {
 document.addEventListener("DOMContentLoaded", fetchCurrentUser);
 
 
-function handleNewSubmit() {
-    const price = parseFloat(document.getElementById('newPriceInput').value);
-    const quantity = parseInt(document.getElementById('newQuantityInput').value);
-
-    // ตรวจสอบ input
-    if (!newModalState.selectedItem) {
-        alert('Please select item!');
-        return;
-    }
-    if (!price || !quantity) {
-        alert('Please fill out all the information.!');
-        return;
-    }
-    if (price <= 0) {
-        alert('Price must be greater than 0!');
-        return;
-    }
-    if (quantity <= 0) {
-        alert('Quantity must be greater than 0!');
-        return;
-    }
-
-    // ✅ คำนวณราคารวม
-    const totalPrice = price * quantity;
-
-    // ✅ สร้าง market item ใหม่
+// A. ฟังก์ชันเดิมถูกแยกออกมาเพื่อใช้สร้าง Market Item
+function createMarketItem(itemData, price, quantity, totalPrice, orderType) {
     const container = document.querySelector('.market-container');
-    const itemData = newItemsData[newModalState.selectedItem];
+    const typeClass = (orderType === 'sell') ? 'wantsell' : 'wantbuy';
+    const buttonText = (orderType === 'sell') ? 'Buy' : 'Sell'; // ผู้ใช้จะเห็นปุ่มตรงข้ามกับ OrderType
 
     const newItem = document.createElement('div');
     newItem.classList.add('market-item');
     newItem.innerHTML = `
-        <div class="item-image">
-            <img src="${itemData.image}" />
-        </div>
-        <div class="item-info">
-            <div class="item-name">${newModalState.selectedItem}</div>
-            <div class="item-price">${price} ฿ x ${quantity}</div>
-            <div class="item-time">Total: ${totalPrice} ฿</div>
-            <div class="seller-info">
-                <div class="seller-avatar"></div>
-                <span>${currentUser}</span>
+        <div class="${typeClass}">
+            <div class="item-image">
+                <img src="${itemData.image}" />
             </div>
+            <div class="item-info">
+                <div class="item-name">${newModalState.selectedItem}</div>
+                <div class="item-price">${price} ฿ x ${quantity}</div>
+                <div class="item-time">Total: ${totalPrice} ฿</div>
+                <div class="seller-info">
+                    <div class="seller-avatar"></div>
+                    <span>${currentUser}</span>
+                </div>
+            </div>
+            <button class="action-btn ${buttonText.toLowerCase()}-btn">${buttonText}</button>
         </div>
-        <button class="buy-btn">Buy</button>
     `;
     
-    //  ใส่ popup ตอนกด Buy
-    newItem.querySelector('.buy-btn').addEventListener('click', function() {
-        showPopup('Buy ' + newModalState.selectedItem + ' success!', 'success');
+    // ใส่ popup ตอนกด Buy/Sell
+    newItem.querySelector('.action-btn').addEventListener('click', function() {
+        const actionMessage = (orderType === 'sell') ? 
+            'Buy ' + newModalState.selectedItem + ' success!' :
+            'Sell ' + newModalState.selectedItem + ' success!';
+        showPopup(actionMessage, 'success');
     });
-
-    container.prepend(newItem);
-    closePlaceOrderModal();
-    showPopup('Sell order added successfully!', 'success');
 
     // แทรกไว้บนสุด
     container.prepend(newItem);
-
-    // ปุ่ม Buy ของ item ใหม่นี้
-    newItem.querySelector('.buy-btn').addEventListener('click', function() {
-        
-    });
-
-    // ปิด Modal และรีเซ็ตฟอร์ม
-    closePlaceOrderModal();
-
-    // แจ้งเตือน
-    
 }
 
+// B. ฟังก์ชันใหม่สำหรับตรวจสอบโหมดและส่งคำสั่ง
+function handleOrderSubmit() {
+    const toggleInput = document.getElementById('mode-toggle');
+    const orderType = toggleInput.checked ? 'buy' : 'sell'; // checked=Want Buy, unchecked=Want Sell
+
+    const price = parseFloat(document.getElementById('newPriceInput').value);
+    const quantity = parseInt(document.getElementById('newQuantityInput').value);
+
+    // ตรวจสอบ input (เหมือนเดิม)
+    if (!newModalState.selectedItem) {
+        showPopup('Please select item!', 'warning');
+        return;
+    }
+    if (!price || !quantity || price <= 0 || quantity <= 0) {
+        showPopup('Please fill out all the information correctly!', 'warning');
+        return;
+    }
+
+    const totalPrice = price * quantity;
+    const itemData = newItemsData[newModalState.selectedItem];
+    
+    // ✅ เรียกใช้ฟังก์ชันสร้าง Market Item ตาม Order Type
+    createMarketItem(itemData, price, quantity, totalPrice, orderType);
+
+    // ปิด Modal และแจ้งเตือน
+    closePlaceOrderModal();
+    const successMessage = (orderType === 'sell') ? 
+        'Sell order added successfully!' : 
+        'Buy request added successfully!';
+    showPopup(successMessage, 'success');
+}
+
+
+// C. แทนที่ Event Listener เดิมด้วย Logic ใหม่
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (โค้ดเดิมทั้งหมดใน DOMContentLoaded) ...
+
+    // หาปุ่ม Submit ใหม่
+    const submitButton = document.getElementById('newSubmitButton');
+    if (submitButton) {
+        // เปลี่ยนมาใช้ handleOrderSubmit ที่ถูกปรับปรุง
+        submitButton.addEventListener('click', handleOrderSubmit);
+    }
+    
+    // ... (โค้ดเดิมทั้งหมดใน DOMContentLoaded) ...
+    
+    const toggleInput = document.getElementById('mode-toggle');
+    const currentStateText = document.getElementById('current-state');
+
+    // ฟังก์ชันสำหรับอัปเดตข้อความสถานะ
+    function updateState() {
+        if (toggleInput.checked) {
+            // เมื่อ checked (เลื่อนไปทางขวา) คือ "want buy"
+            currentStateText.textContent = "Current Mode: Want Buy";
+        } else {
+            // เมื่อ unchecked (เลื่อนไปทางซ้าย) คือ "want sell"
+            currentStateText.textContent = "Current Mode: Want Sell";
+        }
+    }
+
+    // กำหนดสถานะเริ่มต้นเมื่อโหลดหน้า
+    updateState();
+
+    // เพิ่ม event listener เมื่อมีการเปลี่ยนแปลงสถานะ
+    toggleInput.addEventListener('change', updateState);
+});
+        let newItemsData = {
+            "Red Dragon": {
+                image: "images/RedDragon.webp",
+                description: "Powerful fire breathing dragon"
+            },
+            "Golden Bee": {
+                image: "images/GoldenBee.webp",
+                description: "Rare golden bee specimen"
+            }
+        };
 
 
 
@@ -333,3 +376,24 @@ document.getElementById("signOutBtn").addEventListener("click", async function(e
 // โหลดหน้ามา → อัปเดตเมนู
 document.addEventListener("DOMContentLoaded", updateUserMenu);
 
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleInput = document.getElementById('mode-toggle');
+    const currentStateText = document.getElementById('current-state');
+
+    // ฟังก์ชันสำหรับอัปเดตข้อความสถานะ
+    function updateState() {
+        if (toggleInput.checked) {
+            // เมื่อ checked (เลื่อนไปทางขวา) คือ "want buy"
+            currentStateText.textContent = "Current Mode: Want Buy";
+        } else {
+            // เมื่อ unchecked (เลื่อนไปทางซ้าย) คือ "want sell"
+            currentStateText.textContent = "Current Mode: Want Sell";
+        }
+    }
+
+    // กำหนดสถานะเริ่มต้นเมื่อโหลดหน้า
+    updateState();
+
+    // เพิ่ม event listener เมื่อมีการเปลี่ยนแปลงสถานะ
+    toggleInput.addEventListener('change', updateState);
+});
