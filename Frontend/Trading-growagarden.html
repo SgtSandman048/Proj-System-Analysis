@@ -65,9 +65,11 @@
         
         <!-- Market Section -->
         <section class="market-section">
+            
             <div class="market-container">
            
         </section>
+        
     </main>
 
     <!-- Place Order Button -->
@@ -118,9 +120,21 @@
                         <span class="new-close-icon">×</span>
                     </button>
 
-                    <div class="new-right-content">
+                    <div class="new-right-content" style="display: block;">
                         <!-- Header -->
                         <h2 class="new-order-title">Place Order</h2>
+                        <div class="toggle-switch-container">
+                        <input type="checkbox" id="mode-toggle" class="toggle-input" checked> 
+                        
+                        <label for="mode-toggle" class="toggle-label">
+                            <span class="label-text left-label">want sell</span>
+                            <span class="slider"></span>
+                            <span class="label-text right-label">want buy</span>
+                        </label>
+                        
+                        <p id="current-state">Current Mode: Want Sell</p>
+                    
+                        
 
 
                         <!-- Form Fields -->
@@ -164,7 +178,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button class="new-submit-btn" onclick="handleNewSubmit()">
+                        <button class="new-submit-btn" id="newSubmitButton">
                             Place Order
                         </button>
                     </div>
