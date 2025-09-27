@@ -1265,3 +1265,117 @@ body {
     color: #333;
     
 }
+
+/* Market Section - Two Column Layout */
+.market-section {
+    width: 90%;
+    max-width: 1400px;
+    margin-top: 20px;
+}
+
+.market-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 100%;
+}
+
+.market-column {
+    background: rgba(14, 28, 73, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid;
+    min-height: 600px;
+}
+
+.buy-column {
+    border-color: #10b981;
+}
+
+.sell-column {
+    border-color: #ef4444;
+}
+
+.column-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid;
+}
+
+.buy-column .column-header {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.sell-column .column-header {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.column-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.column-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.market-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.market-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.item-quantity {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.chat-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chat-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .market-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

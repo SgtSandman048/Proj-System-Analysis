@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Split Box</title>
+    <style>
+        /* Basic styling for the container */
+        .container {
+            display: flex; /* This is the key to making the children stack horizontally */
+            width: 100%;
+            height: 400px; /* Example height */
+            border: 2px solid black;
+        }
+
+        /* Styling for the two split panels */
+        .left-panel, .right-panel {
+            flex: 1; /* This makes both panels take up an equal amount of space */
+            padding: 20px;
+            box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+        }
+
+        .left-panel {
+            background-color: lightblue;
+        }
+
+        .right-panel {
+            background-color: lightcoral;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Vertical Split Box Example</h1>
+
+    <div class="container">
+        <div class="left-panel">
+            <h2>Left Side</h2>
+            <p>Content for the left side of the box.</p>
+        </div>
+        <div class="right-panel">
+            <h2>Right Side</h2>
+            <p>Content for the right side of the box.</p>
+        </div>
+    </div>
+
+</body>
+</html>
