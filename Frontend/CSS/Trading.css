@@ -522,9 +522,10 @@ body {
     filter: brightness(0) invert(1);
 }
 
+
 /* Market Section */
 .market-section {
-    width: 100%;
+    width: 35%;
     max-width: 1200px;
     margin-top: 20px;
 }
@@ -615,7 +616,7 @@ body {
     background-color: whitesmoke;
 }
 
-.buy-btn {
+.action-btn {
     position: absolute;
     bottom: 15px;
     right: 20px;
@@ -629,7 +630,7 @@ body {
     transition: background-color 0.3s;
 }
 
-.buy-btn:hover {
+.action-btn:hover {
     background-color: #45a049;
 }
 
@@ -1181,3 +1182,86 @@ body {
 .popup.success { background: #28a745; }
 .popup.error { background: #dc3545; }
 .popup.warning { background: #ffc107; color: #000; }
+
+.toggle-switch-container {
+    text-align: left;
+}
+
+/* ซ่อน checkbox เดิม */
+.toggle-input {
+    display: none;
+}
+
+.toggle-label {
+    display: inline-flex;
+    position: relative;
+    cursor: pointer;
+    width: 250px; /* ความกว้างทั้งหมดของ switch */
+    height: 40px; /* ความสูงของ switch */
+    background-color: #ffffff;
+    border-radius: 20px; /* ทำให้มุมโค้งมน */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s;
+    user-select: none;
+    padding: 0; /* ลบ padding เริ่มต้น */
+}
+
+/* จัดรูปแบบข้อความ "want sell" และ "want buy" */
+.label-text {
+    position: absolute;
+    top: 0;
+    line-height: 40px; /* จัดกึ่งกลางแนวตั้ง */
+    font-weight: bold;
+    color: #444;
+    transition: color 0.4s;
+    width: 50%;
+    text-align: center;
+    z-index: 1; /* ให้อยู่เหนือ slider */
+}
+
+.left-label {
+    left: 0;
+    /* สีเริ่มต้นของ "want sell" เมื่อเป็นสถานะหลัก */
+    color: white; 
+}
+
+.right-label {
+    right: 0;
+}
+
+/* ตัวเลื่อน (Slider) */
+.slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 121px; /* ความกว้าง: (width / 2) - (2*margin) */
+    height: 36px;
+    background-color: #00a130; /* สีของ slider */
+    border-radius: 18px; 
+    transition: transform 0.4s, background-color 0.4s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* สถานะ: เมื่อ Input ถูก 'Checked' (คือ "want buy") */
+.toggle-input:checked + .toggle-label .slider {
+    /* เลื่อนไปทางขวา: width - slider-width - (2*margin) */
+    transform: translateX(126px); 
+    background-color: #ff5656; /* สีของ slider เมื่อเป็น "want buy" */
+}
+
+.toggle-input:checked + .toggle-label .left-label {
+    color: #444; /* ทำให้ "want sell" สีเข้มขึ้น */
+}
+
+.toggle-input:checked + .toggle-label .right-label {
+    color: white; /* ทำให้ "want buy" มีสีเดียวกับ slider */
+}
+
+/* ข้อความแสดงสถานะปัจจุบัน (JS จะอัปเดตตรงนี้) */
+#current-state {
+    margin-top: 2px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #333;
+    
+}
