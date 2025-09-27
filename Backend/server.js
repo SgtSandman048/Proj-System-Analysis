@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const http = require('http'); // Import the http module
 const WebSocket = require('ws'); // Import the WebSocket library
+const Message = require('./models/Message');
 
 console.log('Checking Routes ...\n');
 
@@ -47,14 +48,33 @@ const wss = new WebSocket.Server({ server });
 wss.on('connection', ws => {
   console.log('Client connected.');
 
-  ws.on('message', message => {
+  ws.on('message', async message => {
+  try {
+    // Parse the incoming message to get the data
+    const messageData = JSON.parse(message.toString());
+
+    // Create a new message document using the Message model
+    const newMessage = new Message({
+      tradeSession: messageData.tradeSession, // You need to provide the session ID from the client
+      sender: messageData.sender, // You need to provide the sender ID from the client
+      text: messageData.text
+    });
+
+    // Save the message to the database
+    await newMessage.save();
+    console.log('Message saved to database.');
+
     // Broadcast the message to all other connected clients
     wss.clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message.toString());
+        client.send(JSON.stringify(messageData));
       }
     });
-  });
+
+  } catch (error) {
+    console.error('Failed to save or broadcast message:', error);
+  }
+});
 
   ws.on('close', () => {
     console.log('Client disconnected.');

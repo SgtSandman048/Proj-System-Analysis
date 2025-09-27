@@ -1,399 +1,403 @@
-        // Items Database for new modal
-/*        let newItemsData = {
-    "Red Dragon": {
-        image: "images/RedDragon.webp",
-        description: "Powerful fire breathing dragon"
-    },
-    "Golden Bee": {
-        image: "images/GoldenBee.webp",
-        description: "Rare golden bee specimen"
-    }
-};*/
+// Configuration
+const API_BASE_URL = 'http://localhost:3000/api'; // Adjust this to match your backend URL
 
-        // New modal state
-        let newModalState = {
-            orderType: 'buy',
-            selectedItem: '',
-            price: '',
-            quantity: ''
-        };
+// State management
+let currentUser = null;
+let currentMode = 'sell'; // 'sell' or 'buy'
 
-        /*
-        let newItemsData = {};  // เก็บข้อมูล item จาก backend
-*/
-        async function fetchItemsFromDB() {
-    try {
-        const res = await fetch('/api/items');  // ✅ backend จะต้องมี route /api/items
-        const data = await res.json();
-        newItemsData = data; // เก็บ item list ที่ backend ส่งมา
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+    setupEventListeners();
+    checkUserLoginStatus();
+});
 
-        // อัปเดต dropdown ให้มี option ตาม DB
-        const select = document.getElementById('newItemSelect');
-        select.innerHTML = '<option value="">-- Select Item --</option>'; // reset
-
-        Object.keys(newItemsData).forEach(itemName => {
-            const option = document.createElement('option');
-            option.value = itemName;
-            option.textContent = itemName;
-            select.appendChild(option);
-        });
-    } catch (err) {
-        console.error("โหลด item list ไม่ได้:", err);
-    }
-}
-
-// ✅ เรียกตอนโหลดหน้าเว็บ
-document.addEventListener("DOMContentLoaded", fetchItemsFromDB);
-
-
-
-        // Original JavaScript functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Buy button functionality
-            const buyButtons = document.querySelectorAll('.buy-btn');
-            buyButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const itemName = this.closest('.market-item').querySelector('.item-name').textContent;
-                    alert('ซื้อ ' + itemName + ' สำเร็จ!');
-                });
-            });
-
-            // Search functionality
-            const searchBtn = document.querySelector('.search-btn');
-            const searchInput = document.querySelector('.search-input');
-
-            searchBtn.addEventListener('click', function() {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    alert('ค้นหา: ' + searchTerm);
-                } else {
-                    alert('กรุณาใส่คำค้นหา');
-                }
-            });
-
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const searchTerm = this.value.trim();
-                    if (searchTerm) {
-                        alert('ค้นหา: ' + searchTerm);
-                    } else {
-                        alert('กรุณาใส่คำค้นหา');
-                    }
-                }
-            });
-
-            // Smooth hover effects
-            const marketItems = document.querySelectorAll('.market-item');
-            marketItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                    this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'none';
-                });
-            });
-        });
-
-        // New Modal Functions
-        function openPlaceOrderModal() {
-            document.getElementById('placeOrderModal').style.display = 'flex';
-            resetNewModalForm();
-        }
-
-        function closePlaceOrderModal() {
-            document.getElementById('placeOrderModal').style.display = 'none';
-            resetNewModalForm();
-        }
-
-function resetNewModalForm() {
-    newModalState = {
-        orderType: 'sell', // ใช้เฉพาะขาย
-        selectedItem: '',
-        price: '',
-        quantity: ''
-    };
-
-    document.getElementById('newItemSelect').value = '';
-    document.getElementById('newPriceInput').value = '';
-    document.getElementById('newQuantityInput').value = '';
-    updateNewItemDisplay('');
-}
-
-
-
-        function setNewOrderType(type) {
-            newModalState.orderType = type;
-            
-            const sellBtn = document.getElementById('newSellButton');
-            const buyBtn = document.getElementById('newBuyButton');
-            
-            if (type === 'sell') {
-                sellBtn.classList.add('active');
-                buyBtn.classList.remove('active');
-            } else {
-                buyBtn.classList.add('active');
-                sellBtn.classList.remove('active');
-            }
-        }
-
-        function handleNewItemSelection() {
-            const selectedItem = document.getElementById('newItemSelect').value;
-            newModalState.selectedItem = selectedItem;
-            updateNewItemDisplay(selectedItem);
-        }
-
-        function updateNewItemDisplay(itemName) {
-            const container = document.getElementById('newItemImageContainer');
-            
-            if (itemName && newItemsData[itemName]) {
-                const item = newItemsData[itemName];
-                container.innerHTML = `
-                    <div class="new-item-content">
-                        <img src="${item.image}" alt="${itemName}" class="new-item-image" />
-                        <h3 class="new-item-name">${itemName}</h3>
-                        <p class="new-item-description">${item.description}</p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="new-placeholder-content">
-                        <div class="new-placeholder-icon">?</div>
-                        <p class="new-placeholder-text">Select an item to view details</p>
-                    </div>
-                `;
-            }
-        }
-
-// สมมติว่ามี username จากระบบ login
-// const currentUser = "Jeffy";
-
-let currentUser = "Guest"; // ค่า default ถ้าไม่ได้ login
-
-async function fetchCurrentUser() {
-    try {
-        const res = await fetch('/api/current-user'); // backend จะส่ง JSON
-        const data = await res.json();
-        currentUser = data.username; // เก็บ username ที่ได้
-    } catch (err) {
-        console.error("ดึงข้อมูล user ไม่ได้:", err);
-    }
-}
-
-// ดึง user ตอนเปิดหน้าเว็บ
-document.addEventListener("DOMContentLoaded", fetchCurrentUser);
-
-
-// A. ฟังก์ชันเดิมถูกแยกออกมาเพื่อใช้สร้าง Market Item
-function createMarketItem(itemData, price, quantity, totalPrice, orderType) {
-    const container = document.querySelector('.market-container');
-    const typeClass = (orderType === 'sell') ? 'wantsell' : 'wantbuy';
-    const buttonText = (orderType === 'sell') ? 'Buy' : 'Sell'; // ผู้ใช้จะเห็นปุ่มตรงข้ามกับ OrderType
-
-    const newItem = document.createElement('div');
-    newItem.classList.add('market-item');
-    newItem.innerHTML = `
-        <div class="${typeClass}">
-            <div class="item-image">
-                <img src="${itemData.image}" />
-            </div>
-            <div class="item-info">
-                <div class="item-name">${newModalState.selectedItem}</div>
-                <div class="item-price">${price} ฿ x ${quantity}</div>
-                <div class="item-time">Total: ${totalPrice} ฿</div>
-                <div class="seller-info">
-                    <div class="seller-avatar"></div>
-                    <span>${currentUser}</span>
-                </div>
-            </div>
-            <button class="action-btn ${buttonText.toLowerCase()}-btn">${buttonText}</button>
-        </div>
-    `;
+function initializeApp() {
+    // Initialize toggle switch
+    const toggle = document.getElementById('mode-toggle');
+    const currentState = document.getElementById('current-state');
     
-    // ใส่ popup ตอนกด Buy/Sell
-    newItem.querySelector('.action-btn').addEventListener('click', function() {
-        const actionMessage = (orderType === 'sell') ? 
-            'Buy ' + newModalState.selectedItem + ' success!' :
-            'Sell ' + newModalState.selectedItem + ' success!';
-        showPopup(actionMessage, 'success');
-    });
-
-    // แทรกไว้บนสุด
-    container.prepend(newItem);
+    if (toggle && currentState) {
+        toggle.addEventListener('change', function() {
+            currentMode = this.checked ? 'buy' : 'sell'; // Fixed: switched logic
+            currentState.textContent = `Current Mode: Want ${currentMode === 'sell' ? 'Sell' : 'Buy'}`;
+        });
+    }
 }
 
-// B. ฟังก์ชันใหม่สำหรับตรวจสอบโหมดและส่งคำสั่ง
-function handleOrderSubmit() {
-    const toggleInput = document.getElementById('mode-toggle');
-    const orderType = toggleInput.checked ? 'buy' : 'sell'; // checked=Want Buy, unchecked=Want Sell
-
-    const price = parseFloat(document.getElementById('newPriceInput').value);
-    const quantity = parseInt(document.getElementById('newQuantityInput').value);
-
-    // ตรวจสอบ input (เหมือนเดิม)
-    if (!newModalState.selectedItem) {
-        showPopup('Please select item!', 'warning');
-        return;
-    }
-    if (!price || !quantity || price <= 0 || quantity <= 0) {
-        showPopup('Please fill out all the information correctly!', 'warning');
-        return;
-    }
-
-    const totalPrice = price * quantity;
-    const itemData = newItemsData[newModalState.selectedItem];
-    
-    // ✅ เรียกใช้ฟังก์ชันสร้าง Market Item ตาม Order Type
-    createMarketItem(itemData, price, quantity, totalPrice, orderType);
-
-    // ปิด Modal และแจ้งเตือน
-    closePlaceOrderModal();
-    const successMessage = (orderType === 'sell') ? 
-        'Sell order added successfully!' : 
-        'Buy request added successfully!';
-    showPopup(successMessage, 'success');
-}
-
-
-// C. แทนที่ Event Listener เดิมด้วย Logic ใหม่
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (โค้ดเดิมทั้งหมดใน DOMContentLoaded) ...
-
-    // หาปุ่ม Submit ใหม่
+function setupEventListeners() {
+    // Submit button event listener
     const submitButton = document.getElementById('newSubmitButton');
     if (submitButton) {
-        // เปลี่ยนมาใช้ handleOrderSubmit ที่ถูกปรับปรุง
-        submitButton.addEventListener('click', handleOrderSubmit);
-    }
-    
-    // ... (โค้ดเดิมทั้งหมดใน DOMContentLoaded) ...
-    
-    const toggleInput = document.getElementById('mode-toggle');
-    const currentStateText = document.getElementById('current-state');
-
-    // ฟังก์ชันสำหรับอัปเดตข้อความสถานะ
-    function updateState() {
-        if (toggleInput.checked) {
-            // เมื่อ checked (เลื่อนไปทางขวา) คือ "want buy"
-            currentStateText.textContent = "Current Mode: Want Buy";
-        } else {
-            // เมื่อ unchecked (เลื่อนไปทางซ้าย) คือ "want sell"
-            currentStateText.textContent = "Current Mode: Want Sell";
-        }
+        submitButton.addEventListener('click', handlePlaceOrder);
     }
 
-    // กำหนดสถานะเริ่มต้นเมื่อโหลดหน้า
-    updateState();
-
-    // เพิ่ม event listener เมื่อมีการเปลี่ยนแปลงสถานะ
-    toggleInput.addEventListener('change', updateState);
-});
-        let newItemsData = {
-            "Red Dragon": {
-                image: "images/RedDragon.webp",
-                description: "Powerful fire breathing dragon"
-            },
-            "Golden Bee": {
-                image: "images/GoldenBee.webp",
-                description: "Rare golden bee specimen"
-            }
-        };
-
-
-
-
-        // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                closePlaceOrderModal();
-            }
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePlaceOrderModal();
-            }
-        });
-
-        // Legacy modal functions (for compatibility)
-        function setOrderType(type) {
-            setNewOrderType(type);
-        }
-
-
-
-        function showPopup(message, type = 'success') {
-    const container = document.getElementById('popup-container');
-    const popup = document.createElement('div');
-    popup.classList.add('popup', type);
-    popup.textContent = message;
-
-    container.appendChild(popup);
-
-    // trigger animation
-    setTimeout(() => popup.classList.add('show'), 50);
-
-    // auto remove
-    setTimeout(() => {
-        popup.classList.remove('show');
-        setTimeout(() => popup.remove(), 300);
-    }, 3000);
+    // Item selection change listener
+    const itemSelect = document.getElementById('newItemSelect');
+    if (itemSelect) {
+        itemSelect.addEventListener('change', handleNewItemSelection);
+    }
 }
-//สมมติ การล็อคอิน
-// let isLoggedIn = true; // เปลี่ยนเป็น false ถ้า logout
 
-async function updateUserMenu() {
+function checkUserLoginStatus() {
+    // Check if user is logged in (you can implement this based on your authentication system)
+    const userToken = localStorage.getItem('userToken');
+    const username = localStorage.getItem('username');
+    
+    if (userToken && username) {
+        showUserLoggedIn(username);
+    } else {
+        showSignInOption();
+    }
+}
+
+function showUserLoggedIn(username) {
+    const signInLink = document.getElementById('signInLink');
+    const userDropdown = document.getElementById('userDropdown');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    
+    if (signInLink) signInLink.style.display = 'none';
+    if (userDropdown) userDropdown.style.display = 'block';
+    if (usernameDisplay) usernameDisplay.textContent = username;
+}
+
+function showSignInOption() {
+    const signInLink = document.getElementById('signInLink');
+    const userDropdown = document.getElementById('userDropdown');
+    
+    if (signInLink) signInLink.style.display = 'block';
+    if (userDropdown) userDropdown.style.display = 'none';
+}
+
+// Modal functions
+function openPlaceOrderModal() {
+    const modal = document.getElementById('placeOrderModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+}
+
+function closePlaceOrderModal() {
+    const modal = document.getElementById('placeOrderModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+        clearForm();
+    }
+}
+
+function clearForm() {
+    const itemSelect = document.getElementById('newItemSelect');
+    const priceInput = document.getElementById('newPriceInput');
+    const quantityInput = document.getElementById('newQuantityInput');
+    
+    if (itemSelect) itemSelect.value = '';
+    if (priceInput) priceInput.value = '';
+    if (quantityInput) quantityInput.value = '';
+    
+    // Clear item preview
+    const imageContainer = document.getElementById('newItemImageContainer');
+    if (imageContainer) {
+        imageContainer.innerHTML = `
+            <div class="new-placeholder-content">
+                <div class="new-placeholder-icon">?</div>
+                <p class="new-placeholder-text">Select an item to view details</p>
+            </div>
+        `;
+    }
+}
+
+function handleNewItemSelection() {
+    const itemSelect = document.getElementById('newItemSelect');
+    const imageContainer = document.getElementById('newItemImageContainer');
+    
+    if (!itemSelect || !imageContainer) return;
+    
+    const selectedItem = itemSelect.value;
+    
+    if (selectedItem) {
+        // Update the item preview
+        imageContainer.innerHTML = `
+            <div class="new-item-preview">
+                <h3>${selectedItem}</h3>
+                <div class="item-icon">📦</div>
+                <p>Selected item: ${selectedItem}</p>
+            </div>
+        `;
+    } else {
+        // Show placeholder
+        imageContainer.innerHTML = `
+            <div class="new-placeholder-content">
+                <div class="new-placeholder-icon">?</div>
+                <p class="new-placeholder-text">Select an item to view details</p>
+            </div>
+        `;
+    }
+}
+
+// Main function to handle placing an order
+async function handlePlaceOrder() {
     try {
-        const res = await fetch('/api/current-user'); // ✅ backend ต้องเขียน endpoint นี้
-        const data = await res.json();
-
-        const signInLink = document.getElementById("signInLink");
-        const userDropdown = document.getElementById("userDropdown");
-
-        if (data.loggedIn) {
-            signInLink.style.display = "none";
-            userDropdown.style.display = "inline-block";
-            document.getElementById("usernameDisplay").textContent = data.username;
-        } else {
-            signInLink.style.display = "inline-block";
-            userDropdown.style.display = "none";
+        // Get form data
+        const formData = getFormData();
+        
+        // Validate form data
+        if (!validateFormData(formData)) {
+            return;
         }
-    } catch (err) {
-        console.error("เชื่อมต่อ backend ไม่ได้:", err);
+
+        // Show loading state
+        showLoadingState(true);
+
+        // Create trade item via API
+        const result = await createTradeItem(formData);
+        
+        if (result.success) {
+            showSuccessMessage('Order placed successfully!');
+            closePlaceOrderModal();
+            // Optionally refresh the market data
+            // await loadMarketData();
+        } else {
+            showErrorMessage(result.message || 'Failed to place order');
+        }
+
+    } catch (error) {
+        console.error('Error placing order:', error);
+        showErrorMessage('An error occurred while placing the order');
+    } finally {
+        showLoadingState(false);
     }
 }
 
-// กดปุ่ม Sign out → ส่งไปที่ backend
-document.getElementById("signOutBtn").addEventListener("click", async function(e) {
-    e.preventDefault();
-    await fetch('/api/logout', { method: 'POST' });
-    updateUserMenu();
-});
+function getFormData() {
+    const itemSelect = document.getElementById('newItemSelect');
+    const priceInput = document.getElementById('newPriceInput');
+    const quantityInput = document.getElementById('newQuantityInput');
+    
+    return {
+        type: currentMode, // 'buy' or 'sell'
+        game: 'GrowAGarden', // You can make this dynamic if needed
+        item: itemSelect ? itemSelect.value : '',
+        price: priceInput ? parseFloat(priceInput.value) : 0,
+        quantity: quantityInput ? parseInt(quantityInput.value) : 0,
+        imageUrl: getItemImageUrl(itemSelect ? itemSelect.value : '')
+    };
+}
 
-// โหลดหน้ามา → อัปเดตเมนู
-document.addEventListener("DOMContentLoaded", updateUserMenu);
+function getItemImageUrl(itemName) {
+    // Map item names to image URLs
+    const itemImages = {
+        'Red Dragon': 'images/red-dragon.png',
+        'Golden Bee': 'images/golden-bee.png',
+        'Abating Link': 'images/abating-link.png',
+        'Abundant Mutation': 'images/abundant-mutation.png',
+        'Abyssal Beacon': 'images/abyssal-beacon.png',
+        'Accelerated Blast': 'images/accelerated-blast.png',
+        // Add more mappings as needed
+    };
+    
+    return itemImages[itemName] || 'images/default-item.png';
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleInput = document.getElementById('mode-toggle');
-    const currentStateText = document.getElementById('current-state');
+function validateFormData(formData) {
+    const errors = [];
+    
+    if (!formData.item) {
+        errors.push('Please select an item');
+    }
+    
+    if (!formData.price || formData.price <= 0) {
+        errors.push('Please enter a valid price');
+    }
+    
+    if (!formData.quantity || formData.quantity <= 0) {
+        errors.push('Please enter a valid quantity');
+    }
+    
+    if (errors.length > 0) {
+        showErrorMessage(errors.join(', '));
+        return false;
+    }
+    
+    return true;
+}
 
-    // ฟังก์ชันสำหรับอัปเดตข้อความสถานะ
-    function updateState() {
-        if (toggleInput.checked) {
-            // เมื่อ checked (เลื่อนไปทางขวา) คือ "want buy"
-            currentStateText.textContent = "Current Mode: Want Buy";
+// API function to create a trade item
+async function createTradeItem(tradeData) {
+    try {
+        // Fixed: Use correct endpoint that matches your route
+        const response = await fetch(`${API_BASE_URL}/item/trades`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add authorization header if needed
+                // 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            },
+            body: JSON.stringify(tradeData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        return { success: true, data: result };
+
+    } catch (error) {
+        console.error('API Error:', error);
+        return { 
+            success: false, 
+            message: error.message || 'Failed to create trade item'
+        };
+    }
+}
+
+// API function to fetch market data (for future use)
+async function fetchMarketData() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/item/trades`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        return { success: true, data: result };
+
+    } catch (error) {
+        console.error('API Error:', error);
+        return { 
+            success: false, 
+            message: error.message || 'Failed to fetch market data'
+        };
+    }
+}
+
+// UI Helper functions
+function showLoadingState(isLoading) {
+    const submitButton = document.getElementById('newSubmitButton');
+    if (submitButton) {
+        if (isLoading) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Placing Order...';
         } else {
-            // เมื่อ unchecked (เลื่อนไปทางซ้าย) คือ "want sell"
-            currentStateText.textContent = "Current Mode: Want Sell";
+            submitButton.disabled = false;
+            submitButton.textContent = 'Place Order';
         }
     }
+}
 
-    // กำหนดสถานะเริ่มต้นเมื่อโหลดหน้า
-    updateState();
+function showSuccessMessage(message) {
+    showPopup(message, 'success');
+}
 
-    // เพิ่ม event listener เมื่อมีการเปลี่ยนแปลงสถานะ
-    toggleInput.addEventListener('change', updateState);
+function showErrorMessage(message) {
+    showPopup(message, 'error');
+}
+
+function showPopup(message, type = 'info') {
+    // Create popup container if it doesn't exist
+    let popupContainer = document.getElementById('popup-container');
+    if (!popupContainer) {
+        popupContainer = document.createElement('div');
+        popupContainer.id = 'popup-container';
+        popupContainer.className = 'popup-container';
+        popupContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            pointer-events: none;
+        `;
+        document.body.appendChild(popupContainer);
+    }
+
+    const popup = document.createElement('div');
+    popup.className = `popup popup-${type}`;
+    popup.style.cssText = `
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        pointer-events: auto;
+        opacity: 0;
+        transform: translateX(300px);
+        transition: all 0.3s ease;
+    `;
+    
+    popup.innerHTML = `
+        <div class="popup-content" style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="popup-message">${message}</span>
+            <button class="popup-close" onclick="this.parentElement.parentElement.remove()" 
+                    style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; margin-left: 10px;">×</button>
+        </div>
+    `;
+
+    popupContainer.appendChild(popup);
+
+    // Trigger animation
+    setTimeout(() => {
+        popup.style.opacity = '1';
+        popup.style.transform = 'translateX(0)';
+    }, 10);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (popup.parentNode) {
+            popup.style.opacity = '0';
+            popup.style.transform = 'translateX(300px)';
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Event listeners for sign in/out (you can integrate with your authentication system)
+document.addEventListener('DOMContentLoaded', function() {
+    const signOutBtn = document.getElementById('signOutBtn');
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleSignOut();
+        });
+    }
 });
+
+function handleSignOut() {
+    // Clear user data
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('username');
+    
+    // Update UI
+    showSignInOption();
+    
+    // Redirect to home or login page
+    window.location.href = 'index.html';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('placeOrderModal');
+    if (modal && e.target === modal) {
+        closePlaceOrderModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePlaceOrderModal();
+    }
+});
+
+// Make functions globally available for HTML onclick handlers
+window.openPlaceOrderModal = openPlaceOrderModal;
+window.closePlaceOrderModal = closePlaceOrderModal;
+window.handleNewItemSelection = handleNewItemSelection;

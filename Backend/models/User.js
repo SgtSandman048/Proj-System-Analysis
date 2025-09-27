@@ -1,3 +1,4 @@
+// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -21,6 +22,9 @@ const userSchema = new mongoose.Schema({
     type: Number, 
     default: 0 
   },
+  // Add these two new fields for password reset
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 });
 
 // Hash the password before saving the user
