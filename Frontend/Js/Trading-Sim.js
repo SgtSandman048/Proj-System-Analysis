@@ -1,19 +1,29 @@
 // Configuration
-const API_BASE_URL = 'http://localhost:3000/api'; // Adjust this to match your backend URL
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // State management
 let currentUser = null;
-let currentMode = 'sell'; // 'sell' or 'buy'
+let currentMode = 'sell';
 
-// Initialize the application
+// SINGLE DOMContentLoaded listener
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
     checkUserLoginStatus();
+    loadMarketData();
+    setupRealTimeUpdates();
+    
+    // Sign out listener
+    const signOutBtn = document.getElementById('signOutBtn');
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleSignOut();
+        });
+    }
 });
 
 function initializeApp() {
-    // Initialize toggle switch
     const toggle = document.getElementById('mode-toggle');
     const currentState = document.getElementById('current-state');
     
@@ -26,13 +36,11 @@ function initializeApp() {
 }
 
 function setupEventListeners() {
-    // Submit button event listener - Note: HTML uses handleNewSubmit()
     const submitButton = document.querySelector('.new-submit-btn');
     if (submitButton) {
         submitButton.addEventListener('click', handlePlaceOrder);
     }
 
-    // Item selection change listener
     const itemSelect = document.getElementById('newItemSelect');
     if (itemSelect) {
         itemSelect.addEventListener('change', handleNewItemSelection);
@@ -40,7 +48,6 @@ function setupEventListeners() {
 }
 
 function checkUserLoginStatus() {
-    // Check if user is logged in (you can implement this based on your authentication system)
     const userToken = localStorage.getItem('userToken');
     const username = localStorage.getItem('username');
     
@@ -74,7 +81,7 @@ function openPlaceOrderModal() {
     const modal = document.getElementById('placeOrderModal');
     if (modal) {
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        document.body.style.overflow = 'hidden';
     }
 }
 
@@ -82,7 +89,7 @@ function closePlaceOrderModal() {
     const modal = document.getElementById('placeOrderModal');
     if (modal) {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restore scrolling
+        document.body.style.overflow = 'auto';
         clearForm();
     }
 }
@@ -96,7 +103,6 @@ function clearForm() {
     if (priceInput) priceInput.value = '';
     if (quantityInput) quantityInput.value = '';
     
-    // Clear item preview
     const imageContainer = document.getElementById('newItemImageContainer');
     if (imageContainer) {
         imageContainer.innerHTML = `
@@ -117,7 +123,6 @@ function handleNewItemSelection() {
     const selectedItem = itemSelect.value;
     
     if (selectedItem) {
-        // Update the item preview with pet-specific styling
         imageContainer.innerHTML = `
             <div class="new-item-preview">
                 <h3>${selectedItem}</h3>
@@ -127,7 +132,6 @@ function handleNewItemSelection() {
             </div>
         `;
     } else {
-        // Show placeholder
         imageContainer.innerHTML = `
             <div class="new-placeholder-content">
                 <div class="new-placeholder-icon">?</div>
@@ -149,32 +153,25 @@ function getPetRarity(petName) {
     return rarities[petName] || 'Unknown';
 }
 
-// Main function to handle placing an order
+// SINGLE handlePlaceOrder function
 async function handlePlaceOrder() {
     try {
-        // Get form data
         const formData = getFormData();
         
-        // Validate form data
         if (!validateFormData(formData)) {
             return;
         }
 
-        // Show loading state
         showLoadingState(true);
-
-        // Create trade item via API
         const result = await createTradeItem(formData);
         
         if (result.success) {
             showSuccessMessage('Pet order placed successfully!');
             closePlaceOrderModal();
-            // Optionally refresh the market data
-            // await loadMarketData();
+            await loadMarketData(); // Refresh data immediately
         } else {
             showErrorMessage(result.message || 'Failed to place pet order');
         }
-
     } catch (error) {
         console.error('Error placing pet order:', error);
         showErrorMessage('An error occurred while placing the pet order');
@@ -183,7 +180,6 @@ async function handlePlaceOrder() {
     }
 }
 
-// Alternative function name for HTML onclick compatibility
 function handleNewSubmit() {
     handlePlaceOrder();
 }
@@ -194,8 +190,8 @@ function getFormData() {
     const quantityInput = document.getElementById('newQuantityInput');
     
     return {
-        type: currentMode, // 'buy' or 'sell'
-        game: 'PetSimulator', // Pet-specific game identifier
+        type: currentMode,
+        game: 'PetSimulator',
         item: itemSelect ? itemSelect.value : '',
         price: priceInput ? parseFloat(priceInput.value) : 0,
         quantity: quantityInput ? parseInt(quantityInput.value) : 0,
@@ -205,15 +201,13 @@ function getFormData() {
 }
 
 function getPetImageUrl(petName) {
-    // Map pet names to image URLs
     const petImages = {
         'Hell Fox': 'images/hell-fox.png',
         'Dominus Empyreus': 'images/dominus-empyreus.png',
         'Abating Link': 'images/abating-link.png',
         'Abundant Mutation': 'images/abundant-mutation.png',
         'Abyssal Beacon': 'images/abyssal-beacon.png',
-        'Accelerated Blast': 'images/accelerated-blast.png',
-        // Add more pet mappings as needed
+        'Accelerated Blast': 'images/accelerated-blast.png'
     };
     
     return petImages[petName] || 'images/default-pet.png';
@@ -222,22 +216,10 @@ function getPetImageUrl(petName) {
 function validateFormData(formData) {
     const errors = [];
     
-    if (!formData.item) {
-        errors.push('Please select a pet');
-    }
-    
-    if (!formData.price || formData.price <= 0) {
-        errors.push('Please enter a valid price');
-    }
-    
-    if (!formData.quantity || formData.quantity <= 0) {
-        errors.push('Please enter a valid quantity');
-    }
-    
-    // Pet-specific validation
-    if (formData.quantity > 100) {
-        errors.push('Maximum quantity for pets is 100');
-    }
+    if (!formData.item) errors.push('Please select a pet');
+    if (!formData.price || formData.price <= 0) errors.push('Please enter a valid price');
+    if (!formData.quantity || formData.quantity <= 0) errors.push('Please enter a valid quantity');
+    if (formData.quantity > 100) errors.push('Maximum quantity for pets is 100');
     
     if (errors.length > 0) {
         showErrorMessage(errors.join(', '));
@@ -247,17 +229,12 @@ function validateFormData(formData) {
     return true;
 }
 
-// API function to create a trade item
+// API functions
 async function createTradeItem(tradeData) {
     try {
-        // Use correct endpoint that matches your route
         const response = await fetch(`${API_BASE_URL}/item/trades`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Add authorization header if needed
-                // 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(tradeData)
         });
 
@@ -268,20 +245,15 @@ async function createTradeItem(tradeData) {
 
         const result = await response.json();
         return { success: true, data: result };
-
     } catch (error) {
         console.error('API Error:', error);
-        return { 
-            success: false, 
-            message: error.message || 'Failed to create pet trade'
-        };
+        return { success: false, message: error.message || 'Failed to create pet trade' };
     }
 }
 
-// API function to fetch market data (for future use)
 async function fetchMarketData() {
     try {
-        const response = await fetch(`${API_BASE_URL}/item/trades?game=PetSimulator`);
+        const response = await fetch(`${API_BASE_URL}/item/trades`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -289,14 +261,140 @@ async function fetchMarketData() {
 
         const result = await response.json();
         return { success: true, data: result };
-
     } catch (error) {
         console.error('API Error:', error);
-        return { 
-            success: false, 
-            message: error.message || 'Failed to fetch pet market data'
-        };
+        return { success: false, message: error.message || 'Failed to fetch pet market data' };
     }
+}
+
+// Market functions
+async function loadMarketData() {
+    try {
+        const result = await fetchMarketData();
+        
+        if (result.success && result.data) {
+            displayMarketItems(result.data);
+        } else {
+            console.error('Failed to load pet market data:', result.message);
+        }
+    } catch (error) {
+        console.error('Error loading pet market data:', error);
+    }
+}
+
+function displayMarketItems(trades) {
+    const buyItemsList = document.getElementById('buyItemsList');
+    const sellItemsList = document.getElementById('sellItemsList');
+    
+    if (!buyItemsList || !sellItemsList) return;
+    
+    buyItemsList.innerHTML = '';
+    sellItemsList.innerHTML = '';
+    
+    const petTrades = trades.filter(trade => trade.game === 'PetSimulator');
+    const buyItems = petTrades.filter(trade => trade.type === 'buy');
+    const sellItems = petTrades.filter(trade => trade.type === 'sell');
+    
+    if (buyItems.length > 0) {
+        buyItems.forEach(item => {
+            buyItemsList.appendChild(createPetItemElement(item, 'buy'));
+        });
+    } else {
+        buyItemsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🐾</div>
+                <div class="empty-text">No pet buy requests yet</div>
+                <div class="empty-subtext">Be the first to post what pets you're looking for!</div>
+            </div>
+        `;
+    }
+    
+    if (sellItems.length > 0) {
+        sellItems.forEach(item => {
+            sellItemsList.appendChild(createPetItemElement(item, 'sell'));
+        });
+    } else {
+        sellItemsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🏪</div>
+                <div class="empty-text">No pets for sale yet</div>
+                <div class="empty-subtext">Be the first to list your pets!</div>
+            </div>
+        `;
+    }
+}
+
+function createPetItemElement(item, type) {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'market-item';
+    
+    const petEmojis = {
+        'Hell Fox': '🦊',
+        'Dominus Empyreus': '👑',
+        'Abating Link': '🔗',
+        'Abundant Mutation': '🧬',
+        'Abyssal Beacon': '🔮',
+        'Accelerated Blast': '💥'
+    };
+    
+    const emoji = petEmojis[item.item] || '🐾';
+    const timeAgo = getTimeAgo(item.createdAt);
+    const quantityText = type === 'buy' ? `Looking for: ${item.quantity} pets` : `Available: ${item.quantity} pets`;
+    const rarity = item.rarity || getPetRarity(item.item);
+    
+    itemDiv.innerHTML = `
+        <div class="item-image">${emoji}</div>
+        <div class="item-info">
+            <div class="item-name">${item.item}</div>
+            <div class="item-price">$${item.price.toFixed(2)}</div>
+            <div class="item-quantity">${quantityText}</div>
+            <div class="pet-rarity" style="color: ${getRarityColor(rarity)}; font-size: 12px; font-weight: bold;">${rarity}</div>
+            <div class="item-time">${timeAgo}</div>
+            <div class="seller-info">
+                <div class="seller-avatar"></div>
+                <span>Trader_${Math.random().toString(36).substr(2, 8)}</span>
+            </div>
+        </div>
+        <button class="chat-btn" onclick="openPetChat('${type}', '${item.item}')">Chat</button>
+    `;
+    
+    return itemDiv;
+}
+
+function getRarityColor(rarity) {
+    const colors = {
+        'Common': '#808080',
+        'Rare': '#0080ff',
+        'Epic': '#8000ff',
+        'Legendary': '#ff8000',
+        'Mythical': '#ff0080'
+    };
+    return colors[rarity] || '#ffffff';
+}
+
+function getTimeAgo(dateString) {
+    const now = new Date();
+    const itemDate = new Date(dateString);
+    const diffInMinutes = Math.floor((now - itemDate) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} days ago`;
+}
+
+function setupRealTimeUpdates() {
+    setInterval(async () => {
+        await loadMarketData();
+    }, 30000);
+}
+
+function openPetChat(type, petName) {
+    alert(`Opening chat for ${type} request: ${petName}\n\nPet trading chat will be implemented soon!`);
 }
 
 // UI Helper functions
@@ -322,7 +420,6 @@ function showErrorMessage(message) {
 }
 
 function showPopup(message, type = 'info') {
-    // Create popup container if it doesn't exist
     let popupContainer = document.getElementById('popup-container');
     if (!popupContainer) {
         popupContainer = document.createElement('div');
@@ -363,13 +460,11 @@ function showPopup(message, type = 'info') {
 
     popupContainer.appendChild(popup);
 
-    // Trigger animation
     setTimeout(() => {
         popup.style.opacity = '1';
         popup.style.transform = 'translateX(0)';
     }, 10);
 
-    // Auto remove after 5 seconds
     setTimeout(() => {
         if (popup.parentNode) {
             popup.style.opacity = '0';
@@ -383,30 +478,14 @@ function showPopup(message, type = 'info') {
     }, 5000);
 }
 
-// Event listeners for sign in/out
-document.addEventListener('DOMContentLoaded', function() {
-    const signOutBtn = document.getElementById('signOutBtn');
-    if (signOutBtn) {
-        signOutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleSignOut();
-        });
-    }
-});
-
 function handleSignOut() {
-    // Clear user data
     localStorage.removeItem('userToken');
     localStorage.removeItem('username');
-    
-    // Update UI
     showSignInOption();
-    
-    // Redirect to home or login page
     window.location.href = 'index.html';
 }
 
-// Close modal when clicking outside
+// Event listeners
 document.addEventListener('click', function(e) {
     const modal = document.getElementById('placeOrderModal');
     if (modal && e.target === modal) {
@@ -414,15 +493,15 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Close modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closePlaceOrderModal();
     }
 });
 
-// Make functions globally available for HTML onclick handlers
+// Global functions
 window.openPlaceOrderModal = openPlaceOrderModal;
 window.closePlaceOrderModal = closePlaceOrderModal;
 window.handleNewItemSelection = handleNewItemSelection;
 window.handleNewSubmit = handleNewSubmit;
+window.openPetChat = openPetChat;
