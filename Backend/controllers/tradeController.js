@@ -3,13 +3,18 @@ const tradeService = require("../service/tradeService");
 // Controller function to handle the POST request for creating a new item
 const createTradeItem = async (req, res) => {
   try {
+    console.log('Received request body size:', JSON.stringify(req.body).length);
+    console.log('Upload images count:', req.body.uploadedImages ? req.body.uploadedImages.length : 0);
+    
     const tradeData = req.body;
     const newTradeItem = await tradeService.createTrade(tradeData);
+    
     res.status(201).json({
       message: "Trade item created successfully",
       data: newTradeItem
     });
   } catch (error) {
+    console.error('Error creating trade item:', error);
     res.status(500).json({
       message: "Failed to create trade item",
       error: error.message

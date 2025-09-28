@@ -14,9 +14,10 @@
         </div>
         <nav class="nav-items">
             <img src="images/bell.png" alt="Notifications" class="nav-icon">
+           
             <a href="home.html" class="nav-item">
                 <img src="images/shopping-cart.png" alt="Market" class="nav-item-icon">
-                Market
+                Home
             </a>
 <div class="menu-user" id="menuUser">
     <!-- ยังไม่ได้ login -->
@@ -63,7 +64,7 @@
             </div>
         </section>
         
-        <!-- Market Section -->
+               <!-- Market Section -->
 <section class="market-section">
     <div class="market-container">
         <!-- Buy Column -->
@@ -90,7 +91,6 @@
     </div>
 </section>
 
-
     <!-- Place Order Button -->
     <button class="place-order-btn" onclick="openPlaceOrderModal()">
         <span class="plus-icon">+</span>
@@ -100,7 +100,7 @@
     <div id="placeOrderModal" class="modal-overlay" style="display: none;">
         <div class="new-modal-container">
             <div class="new-modal-content">
-                <!-- Left Panel - Pet Preview -->
+                <!-- Left Panel - Select Item -->
                 <div class="new-left-panel">
                     <!-- Background Pattern -->
                     <div class="new-bg-pattern">
@@ -113,19 +113,19 @@
                         <!-- Logo Area -->
                         <div class="new-logo-area">
                             <div class="new-logo-icon">
-                                <span class="new-logo-emoji"><a img src="images/lastlogoSA.png"></a></span>
+                                <span class="new-logo-emoji"><a img src="Image/lastlogoSA.png"></a></span>
                             </div>
                         </div>
 
                         <!-- Title -->
-                        <h1 class="new-main-title">Pet Preview</h1>
+                        <h1 class="new-main-title">Select Item</h1>
 
-                        <!-- Pet Display -->
+                        <!-- Item Display -->
                         <div class="new-item-display">
                             <div id="newItemImageContainer" class="new-item-image-container">
                                 <div class="new-placeholder-content">
                                     <div class="new-placeholder-icon">?</div>
-                                    <p class="new-placeholder-text">Enter a pet name and upload images to preview</p>
+                                    <p class="new-placeholder-text">Select an item to view details</p>
                                 </div>
                             </div>
                         </div>
@@ -139,35 +139,33 @@
                         <span class="new-close-icon">×</span>
                     </button>
 
-                    <div class="new-right-content" style="display: block;">
+                    <div class="new-right-content">
                         <!-- Header -->
                         <h2 class="new-order-title">Place Order</h2>
                         <div class="toggle-switch-container">
-                        <input type="checkbox" id="mode-toggle" class="toggle-input" checked> 
-                        
-                        <label for="mode-toggle" class="toggle-label">
-                            <span class="label-text left-label">want sell</span>
-                            <span class="slider"></span>
-                            <span class="label-text right-label">want buy</span>
-                        </label>
-                        
-                        <p id="current-state">Current Mode: Want Sell</p>
-                    </div>
-
+                            <input type="checkbox" id="mode-toggle" class="toggle-input" checked> 
+                            <label for="mode-toggle" class="toggle-label">
+                                <span class="label-text left-label">want sell</span>
+                                <span class="slider"></span>
+                                <span class="label-text right-label">want buy</span>
+                            </label>
+                            <p id="current-state">Current Mode: Want Sell</p>
+                        </div>
                         <!-- Form Fields -->
                         <div class="new-form-container">
-                            <!-- Pet Name Input - FIXED ID -->
+                            <!-- Item Name Dropdown -->
                             <div class="new-form-group">
-                                <label class="new-form-label">Pet Name</label>
-                                <input 
-                                    type="text" 
-                                    id="newItemInput" 
-                                    class="new-form-input pet-name-input" 
-                                    placeholder="Enter pet name (e.g., Hell Fox, Dominus Empyreus, Golden Dragon...)"
-                                    autocomplete="off"
-                                    onchange="handleNewItemInput()"
-                                    oninput="handleNewItemInput()"
-                                />
+                                <label class="new-form-label">Item Name</label>
+                                <select id="newItemSelect" class="new-form-select" onchange="handleNewItemSelection()">
+                                    <option value="">-- Select Item --</option>
+                                    <option value="Hell Fox">Hell Fox</option>
+                                    <option value="Dominus Empyreus">Dominus Empyreus</option>
+                                    <!--รอ DB -->
+                                    <option value="Abating Link"> </option> 
+                                    <option value="Abundant Mutation"> </option>
+                                    <option value="Abyssal Beacon"> </option>
+                                    <option value="Accelerated Blast"> </option>
+                                </select>
                             </div>
 
                             <!-- Price per Unit -->
@@ -178,8 +176,6 @@
                                     id="newPriceInput" 
                                     class="new-form-input" 
                                     placeholder="Enter price"
-                                    min="0"
-                                    step="0.01"
                                 />
                             </div>
 
@@ -191,41 +187,12 @@
                                     id="newQuantityInput" 
                                     class="new-form-input" 
                                     placeholder="Enter quantity"
-                                    min="1"
                                 />
-                            </div>
-
-                            <!-- Image Upload Section -->
-                            <div class="new-form-group">
-                                <label class="new-form-label">Upload Images</label>
-                                
-                                <!-- Upload Button -->
-                                <div class="upload-container">
-                                    <input type="file" id="imageUploadInput" class="upload-input" accept="image/*" multiple style="display: none;">
-                                    <button type="button" class="upload-btn" onclick="document.getElementById('imageUploadInput').click()">
-                                        <span class="upload-icon"></span>
-                                        <span class="upload-text">Choose Images</span>
-                                    </button>
-                                    <div id="uploadStatus" class="upload-status" style="display: none;">
-                                        <span class="loading-spinner">⏳</span>
-                                        <span class="status-text">Uploading...</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Uploaded Images Display -->
-                                <div id="uploadedImagesContainer" class="uploaded-images-container" style="display: none;">
-                                    <div class="images-grid" id="imagesGrid">
-                                        <!-- Uploaded images will be displayed here -->
-                                    </div>
-                                    <div class="upload-summary">
-                                        <span id="imageCount">0</span> image(s) uploaded successfully
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
-                        <button class="new-submit-btn" id="newSubmitButton">
+                        <button class="new-submit-btn" onclick="handleNewSubmit()">
                             Place Order
                         </button>
                     </div>
@@ -236,6 +203,8 @@
 
     <div id="popup-container" class="popup-container"></div>
 
-    <script src="Js/Trading-pet.js"></script>
+    <script src="Js/Trading-Sim.js">
+
+    </script>
 </body>
 </html>

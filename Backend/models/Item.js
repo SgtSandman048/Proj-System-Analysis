@@ -7,6 +7,13 @@ const TradeSchema = new mongoose.Schema({
   imageUrl: { type: String },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
+  uploadedImages: [{
+    id: Number,
+    name: String,
+    url: String,
+    size: Number,
+    uploadedAt: String
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

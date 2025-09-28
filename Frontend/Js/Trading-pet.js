@@ -47,60 +47,11 @@ function setupEventListeners() {
     if (submitButton) {
         submitButton.addEventListener('click', handlePlaceOrder);
     }
-    
-    // Setup item input listener
+
+    // Setup item input listener instead of select
     const itemInput = document.getElementById('newItemInput');
     if (itemInput) {
         itemInput.addEventListener('input', handleNewItemInput);
-    }
-}
-
-function handleNewItemInput() {
-    const itemInput = document.getElementById('newItemInput');
-    if (!itemInput) return;
-    
-    const itemName = itemInput.value.trim();
-    
-    // Add validation feedback
-    if (itemName.length > 50) {
-        itemInput.classList.add('form-error');
-        showInputError('Item name is too long (max 50 characters)');
-    } else if (itemName.length > 0) {
-        itemInput.classList.remove('form-error');
-        itemInput.classList.add('form-success');
-        clearInputError();
-    } else {
-        itemInput.classList.remove('form-error', 'form-success');
-        clearInputError();
-    }
-    
-    // Update left panel display
-    updateLeftPanelDisplay();
-}
-
-function showInputError(message) {
-    let errorElement = document.querySelector('.item-input-error');
-    if (!errorElement) {
-        errorElement = document.createElement('div');
-        errorElement.className = 'item-input-error';
-        errorElement.style.cssText = `
-            color: #ef4444;
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-            animation: fadeIn 0.3s ease;
-        `;
-        
-        const itemInput = document.getElementById('newItemInput');
-        itemInput.parentNode.appendChild(errorElement);
-    }
-    
-    errorElement.textContent = message;
-}
-
-function clearInputError() {
-    const errorElement = document.querySelector('.item-input-error');
-    if (errorElement) {
-        errorElement.remove();
     }
 }
 
@@ -357,11 +308,58 @@ function updateImagesDisplay() {
     }
 }
 
-// Update left panel display
+function handleNewItemInput() {
+    const itemInput = document.getElementById('newItemInput');
+    if (!itemInput) return;
+    
+    const itemName = itemInput.value.trim();
+    
+    // Add validation feedback
+    if (itemName.length > 50) {
+        itemInput.classList.add('form-error');
+        showInputError('Pet name is too long (max 50 characters)');
+    } else if (itemName.length > 0) {
+        itemInput.classList.remove('form-error');
+        itemInput.classList.add('form-success');
+        clearInputError();
+    } else {
+        itemInput.classList.remove('form-error', 'form-success');
+        clearInputError();
+    }
+    
+    // Update left panel display
+    updateLeftPanelDisplay();
+}
+
+function showInputError(message) {
+    let errorElement = document.querySelector('.item-input-error');
+    if (!errorElement) {
+        errorElement = document.createElement('div');
+        errorElement.className = 'item-input-error';
+        errorElement.style.cssText = `
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            animation: fadeIn 0.3s ease;
+        `;
+        
+        const itemInput = document.getElementById('newItemInput');
+        itemInput.parentNode.appendChild(errorElement);
+    }
+    
+    errorElement.textContent = message;
+}
+
+function clearInputError() {
+    const errorElement = document.querySelector('.item-input-error');
+    if (errorElement) {
+        errorElement.remove();
+    }
+}
 function updateLeftPanelDisplay() {
     const leftPanel = document.getElementById('newItemImageContainer');
-    const itemInput = document.getElementById('newItemInput');
-    const selectedItem = itemInput ? itemInput.value.trim() : '';
+    const itemSelect = document.getElementById('newItemSelect');
+    const selectedItem = itemSelect ? itemSelect.value : '';
     
     if (!leftPanel) return;
     
@@ -377,13 +375,13 @@ function updateLeftPanelDisplay() {
                 ` : `
                     <div class="new-item-image" style="display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border: 2px dashed rgba(255, 255, 255, 0.3);">
                         <div style="text-align: center; color: rgba(255, 255, 255, 0.6);">
-                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">${getItemEmoji(selectedItem)}</div>
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">${getPetEmoji(selectedItem)}</div>
                             <div style="font-size: 0.8rem;">No image uploaded</div>
                         </div>
                     </div>
                 `}
                 <div class="new-item-info">
-                    <h3 class="new-item-name">${selectedItem || 'Custom Item'}</h3>
+                    <h3 class="new-item-name">${selectedItem || 'Select a Pet'}</h3>
                     <p class="new-item-details">${uploadedImages.length > 0 ? `${uploadedImages.length} image(s) uploaded` : 'Ready to upload images'}</p>
                     ${uploadedImages.length > 0 ? `
                         <div class="new-image-gallery">
@@ -403,15 +401,15 @@ function updateLeftPanelDisplay() {
         leftPanel.innerHTML = `
             <div class="new-placeholder-content">
                 <div class="new-placeholder-icon">?</div>
-                <p class="new-placeholder-text">Enter an item name and upload images to preview</p>
+                <p class="new-placeholder-text">Select a pet to view details</p>
             </div>
         `;
     }
 }
 
-// Get emoji for item - always return box emoji when no image uploaded
-function getItemEmoji(itemName) {
-    return '📦'; // Always return default box emoji
+// Remove all pet emoji functions - only use box emoji
+function getPetEmoji(itemName) {
+    return '📦'; // Always return box emoji
 }
 
 // Show specific image in left panel
@@ -429,7 +427,7 @@ function showImageInLeftPanel(imageId) {
                 <img src="${image.url}" alt="${image.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
             </div>
             <div class="new-item-info">
-                <h3 class="new-item-name">${selectedItem || 'Custom Item'}</h3>
+                <h3 class="new-item-name">${selectedItem || 'Custom Pet'}</h3>
                 <p class="new-item-details">${uploadedImages.length} image(s) uploaded</p>
                 <div class="new-image-gallery">
                     ${uploadedImages.map((img, index) => `
@@ -450,6 +448,42 @@ function removeImage(imageId) {
     uploadedImages = uploadedImages.filter(img => img.id !== imageId);
     updateImagesDisplay();
     updateLeftPanelDisplay();
+}
+
+function handleNewItemSelection() {
+    updateLeftPanelDisplay();
+    
+    const itemInput = document.getElementById('newItemInput');
+    const imageContainer = document.getElementById('newItemImageContainer');
+    
+    if (!itemInput || !imageContainer) return;
+    
+    const selectedItem = itemInput.value.trim();
+    
+    // If no uploaded images and item entered, show item info
+    if (uploadedImages.length === 0 && selectedItem) {
+        imageContainer.innerHTML = `
+            <div class="new-item-preview">
+                <div class="new-item-image" style="display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border: 2px dashed rgba(255, 255, 255, 0.3);">
+                    <div style="text-align: center; color: rgba(255, 255, 255, 0.6);">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📦</div>
+                        <div style="font-size: 0.8rem;">No image uploaded</div>
+                    </div>
+                </div>
+                <div class="new-item-info">
+                    <h3 class="new-item-name">${selectedItem}</h3>
+                    <p class="new-item-details">Custom pet: ${selectedItem}</p>
+                </div>
+            </div>
+        `;
+    } else if (uploadedImages.length === 0 && !selectedItem) {
+        imageContainer.innerHTML = `
+            <div class="new-placeholder-content">
+                <div class="new-placeholder-icon">?</div>
+                <p class="new-placeholder-text">Enter a pet name and upload images to preview</p>
+            </div>
+        `;
+    }
 }
 
 // SINGLE handlePlaceOrder function
@@ -492,7 +526,7 @@ function getFormData() {
     
     return {
         type: currentMode,
-        game: 'GrowAGarden',
+        game: 'PetSimulator',
         item: itemInput ? itemInput.value.trim() : '',
         price: priceInput ? parseFloat(priceInput.value) : 0,
         quantity: quantityInput ? parseInt(quantityInput.value) : 0,
@@ -507,26 +541,25 @@ function getItemImageUrl(itemName) {
         return uploadedImages[0].url;
     }
     
-    // Default item images for popular items
     const itemImages = {
-        'Red Dragon': 'images/red-dragon.png',
-        'Golden Bee': 'images/golden-bee.png',
-        'Magic Sword': 'images/magic-sword.png',
-        'Crystal Shield': 'images/crystal-shield.png',
-        'Elven Bow': 'images/elven-bow.png',
-        'Fire Gem': 'images/fire-gem.png'
+        'Hell Fox': 'images/hell-fox.png',
+        'Dominus Empyreus': 'images/dominus-empyreus.png',
+        'Abating Link': 'images/abating-link.png',
+        'Abundant Mutation': 'images/abundant-mutation.png',
+        'Abyssal Beacon': 'images/abyssal-beacon.png',
+        'Accelerated Blast': 'images/accelerated-blast.png'
     };
     
-    return itemImages[itemName] || 'images/default-item.png';
+    return itemImages[itemName] || 'images/default-pet.png';
 }
 
 function validateFormData(formData) {
     const errors = [];
     
     if (!formData.item || formData.item.length === 0) {
-        errors.push('Please enter an item name');
+        errors.push('Please enter a pet name');
     } else if (formData.item.length > 50) {
-        errors.push('Item name is too long (max 50 characters)');
+        errors.push('Pet name is too long (max 50 characters)');
     }
     
     if (!formData.price || formData.price <= 0) {
@@ -671,11 +704,11 @@ function displayMarketItems(trades) {
     buyItemsList.innerHTML = '';
     sellItemsList.innerHTML = '';
     
-    // FILTER TO SHOW ONLY GROW A GARDEN ITEMS
-    const growAGardenTrades = trades.filter(trade => trade.game === 'GrowAGarden');
+    // Filter to show only Pet Simulator items
+    const petSimulatorTrades = trades.filter(trade => trade.game === 'PetSimulator');
     
-    const buyItems = growAGardenTrades.filter(trade => trade.type === 'buy');
-    const sellItems = growAGardenTrades.filter(trade => trade.type === 'sell');
+    const buyItems = petSimulatorTrades.filter(trade => trade.type === 'buy');
+    const sellItems = petSimulatorTrades.filter(trade => trade.type === 'sell');
     
     if (buyItems.length > 0) {
         buyItems.forEach(item => {
@@ -711,7 +744,7 @@ function createItemElement(item, type) {
     itemDiv.className = 'market-item';
     
     const timeAgo = getTimeAgo(item.createdAt);
-    const quantityText = type === 'buy' ? `Looking for: ${item.quantity} units` : `Available: ${item.quantity} units`;
+    const quantityText = type === 'buy' ? `Looking for: ${item.quantity} pets` : `Available: ${item.quantity} pets`;
     
     // Get the image to display (uploaded image or default emoji)
     const displayImage = getDisplayImage(item);
@@ -725,7 +758,7 @@ function createItemElement(item, type) {
             <div class="item-time">${timeAgo}</div>
             <div class="seller-info">
                 <div class="seller-avatar"></div>
-                <span>Gardener_${Math.random().toString(36).substr(2, 8)}</span>
+                <span>Trainer_${Math.random().toString(36).substr(2, 8)}</span>
             </div>
         </div>
         <button class="chat-btn" onclick="openChat('${type}', '${item.item}')">Chat</button>
@@ -740,8 +773,8 @@ function getDisplayImage(item) {
         return `<img src="${item.uploadedImages[0].url}" alt="${item.item}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
     }
     
-    // Otherwise use emoji based on item name
-    return getItemEmoji(item.item);
+    // Always use box emoji instead of pet-specific emojis
+    return '📦';
 }
 
 function getTimeAgo(dateString) {

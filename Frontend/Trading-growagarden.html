@@ -118,14 +118,14 @@
                         </div>
 
                         <!-- Title -->
-                        <h1 class="new-main-title">Select Item</h1>
+                        <h1 class="new-main-title">Item Preview</h1>
 
                         <!-- Item Display -->
                         <div class="new-item-display">
                             <div id="newItemImageContainer" class="new-item-image-container">
                                 <div class="new-placeholder-content">
                                     <div class="new-placeholder-icon">?</div>
-                                    <p class="new-placeholder-text">Select an item to view details</p>
+                                    <p class="new-placeholder-text">Enter an item name and upload images to preview</p>
                                 </div>
                             </div>
                         </div>
@@ -158,19 +158,18 @@
 
                         <!-- Form Fields -->
                         <div class="new-form-container">
-                            <!-- Item Name Dropdown -->
+                            <!-- Item Name Input -->
                             <div class="new-form-group">
                                 <label class="new-form-label">Item Name</label>
-                                <select id="newItemSelect" class="new-form-select" onchange="handleNewItemSelection()">
-                                    <option value="">-- Select Item --</option>
-                                    <option value="Red Dragon">Red Dragon</option>
-                                    <option value="Golden Bee">Golden Bee</option>
-                                    <!--รอ DB -->
-                                    <option value="Abating Link"> </option> 
-                                    <option value="Abundant Mutation"> </option>
-                                    <option value="Abyssal Beacon"> </option>
-                                    <option value="Accelerated Blast"> </option>
-                                </select>
+                                <input 
+                                    type="text" 
+                                    id="newItemInput" 
+                                    class="new-form-input item-name-input" 
+                                    placeholder="Enter item name (e.g., Red Dragon, Golden Bee, Magic Sword...)"
+                                    autocomplete="off"
+                                    onchange="handleNewItemInput()"
+                                    oninput="handleNewItemInput()"
+                                />
                             </div>
 
                             <!-- Price per Unit -->
@@ -181,6 +180,8 @@
                                     id="newPriceInput" 
                                     class="new-form-input" 
                                     placeholder="Enter price"
+                                    min="0"
+                                    step="0.01"
                                 />
                             </div>
 
@@ -192,12 +193,41 @@
                                     id="newQuantityInput" 
                                     class="new-form-input" 
                                     placeholder="Enter quantity"
+                                    min="1"
                                 />
+                            </div>
+
+                            <!-- Image Upload Section --->
+                            <div class="new-form-group">
+                                <label class="new-form-label">Upload Images</label>
+                                
+                                <!-- Upload Button -->
+                                <div class="upload-container">
+                                    <input type="file" id="imageUploadInput" class="upload-input" accept="image/*" multiple style="display: none;">
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('imageUploadInput').click()">
+                                        <span class="upload-icon"></span>
+                                        <span class="upload-text">Choose Images</span>
+                                    </button>
+                                    <div id="uploadStatus" class="upload-status" style="display: none;">
+                                        <span class="loading-spinner">⏳</span>
+                                        <span class="status-text">Uploading...</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Uploaded Images Display -->
+                                <div id="uploadedImagesContainer" class="uploaded-images-container" style="display: none;">
+                                    <div class="images-grid" id="imagesGrid">
+                                        <!-- Uploaded images will be displayed here -->
+                                    </div>
+                                    <div class="upload-summary">
+                                        <span id="imageCount">0</span> image(s) uploaded successfully
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
-                        <button class="new-submit-btn" id="newSubmitButton">
+                        <button class="new-submit-btn" id="newSubmitButton" >
                             Place Order
                         </button>
                     </div>
