@@ -19,5 +19,10 @@ router.post('/forgotpassword', userController.forgotPassword);
 // @access  Public
 router.put('/resetpassword/:token', userController.resetPassword);
 
+// @route   POST /api/user/updatepassword
+// @desc    Update password directly
+// @access  Public
+router.post('/updatepassword', userController.updatePassword);
+
 module.exports = router;
 console.log(`Users Routes Status: Ready`);

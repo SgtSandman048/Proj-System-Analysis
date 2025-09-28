@@ -16,11 +16,34 @@ exports.getProfile = async (req, res) => {
   }
 };
 
+// @desc    Update password
+exports.updatePassword = async (req, res) => {
+  const { email, new_password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Set new password
+    user.password = new_password;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password has been successfully updated.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // @desc    Request password reset
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
+  let user;
+  
   try {
-    const user = await User.findOne({ email });
+    user = await User.findOne({ email });
     if (!user) {
       // Send a 200 status even if the user isn't found to prevent email enumeration
       return res.status(200).json({ message: 'If a user with that email exists, a password reset link has been sent.' });
@@ -37,9 +60,12 @@ exports.forgotPassword = async (req, res) => {
     
     res.status(200).json({ message: 'Password reset link sent.', resetToken }); // The token is for testing purposes only
   } catch (error) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
+    // Only clear token fields if user exists
+    if (user) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+    }
     res.status(500).json({ error: error.message });
   }
 };
