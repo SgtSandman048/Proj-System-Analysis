@@ -21,46 +21,22 @@
           <i class="fa-solid fa-envelope"></i>
         </div>
         <div class="input-box">
-          <input type="password" id="login-password" placeholder="Enter your Code" required>
+          <input type="password" id="new-password" placeholder="Enter your new password" required>
           <i class="fa-solid fa-lock"></i>
         </div>
-        <p class="recover">
-            <a href="#">Send Code</a>
-          </p>
+        <div class="input-box">
+          <input type="password" id="confirmnew-password" placeholder="Enter your confirm password" required>
+          <i class="fa-solid fa-lock"></i>
+        </div>
         <button type="submit" class="btn">Reset Pass</button>
       </form>
     </div>
-
-    <!-- Register form -->
-    <div class="form-box register" id="reset-pass-section">
-      <form id="register-form">
-        <h1>Reset Password</h1>
-        <p>Enter new password for (Temp)</p>
-        <div class="input-box">
-          <input type="password" id="reg-password" placeholder="Password" required>
-          <i class="fa-solid fa-lock"></i>
-        </div>
-        <!-- ถ้าจะเก็บ confirm password ไว้ -->
-        <div class="input-box">
-          <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
-          <i class="fa-solid fa-lock"></i>
-          <small id="confirm-error" style="color:red; display:none;">Passwords do not match</small>
-        </div>
-        <button type="submit" class="btn">Register</button>
-      </form>
-    </div>
-
     <!-- toggle panels (ยังใช้ CSS เดิมของคุณได้เลย) -->
     <div class="toggle-box">
       <div class="toggle-panel toggle-left">
         <h1>Hello, welcome!</h1>
-        <p>Back to Login?</p>
-        <button type="button" class="btn register-btn">Click</button>
-      </div>
-      <div class="toggle-panel toggle-right">
-        <h1>Welcome Back!</h1>
-        <p>Already have an Account?</p>
-        <button type="button" class="btn login-btn">Login</button>
+        <p>Back to Login/register?</p>
+        <a href="index.html"><button type="button" class="btn register-btn">Click</button></a>
       </div>
     </div>
   </div>

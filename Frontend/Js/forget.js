@@ -1,105 +1,52 @@
+// เลือกฟอร์ม
+const form = document.getElementById("forget-pass-form");
 
-const container = document.querySelector('.container');
-const registerBtn = document.querySelector('.register-btn');
-const loginBtn = document.querySelector('.login-btn');
+form.addEventListener("submit", function (e) {
+  e.preventDefault(); // ป้องกันการ reload หน้า
 
+  // ดึงค่าจาก input
+  const email = document.getElementById("login-email").value.trim();
+  const newPassword = document.getElementById("new-password").value.trim();
+  const confirmPassword = document.getElementById("confirmnew-password").value.trim();
 
-registerBtn.addEventListener('click',()=>{
-    container.classList.add('active');
-})
-loginBtn.addEventListener('click',()=>{
-    container.classList.remove('active');
-})
+  // ตรวจสอบ validation
+  if (!email) {
+    alert("กรุณากรอกอีเมล");
+    return;
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const registerForm = document.getElementById('register-form');
-    const loginForm = document.getElementById('login-form');
-    const showLoginBtn = document.getElementById('show-login');
-    const showRegisterBtn = document.getElementById('show-register');
-    const registerSection = document.getElementById('register-section');
-    const loginSection = document.getElementById('login-section');
+  if (newPassword.length < 6) {
+    alert("รหัสผ่านใหม่ควรมีอย่างน้อย 6 ตัวอักษร");
+    return;
+  }
 
-    const confirmError = document.getElementById('confirm-error');
+  if (newPassword !== confirmPassword) {
+    alert("รหัสผ่านใหม่และยืนยันรหัสผ่านไม่ตรงกัน");
+    return;
+  }
 
-    // Default show register form
-    registerSection.classList.add('active');
-
-    // Toggle between forms
-    /*showLoginBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerSection.classList.remove('active');
-        loginSection.classList.add('active');
+  // ตัวอย่างการส่งข้อมูลไป Backend (เช่น PHP API)
+  fetch("reset_password.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", 
+    },
+    body: JSON.stringify({
+      email: email,
+      new_password: newPassword
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        alert("เปลี่ยนรหัสผ่านสำเร็จ!");
+        window.location.href = "index.html"; // กลับไปหน้า login
+      } else {
+        alert("เกิดข้อผิดพลาด: " + data.message);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
     });
-
-    showRegisterBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginSection.classList.remove('active');
-        registerSection.classList.add('active');
-    });*/
-
-    // Register
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('reg-username').value;
-        const email = document.getElementById('reg-email').value;
-        const password = document.getElementById('reg-password').value;
-        const confirmPassword = document.getElementById('reg-confirm-password').value;
-
-        if (password !== confirmPassword) {
-            confirmError.style.display = "block";
-            return;
-        } else {
-            confirmError.style.display = "none";
-        }
-
-        try {
-            const response = await fetch('http://localhost:3000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message || "Registration successful!");
-                showLoginBtn.click();
-            } else {
-                alert(data.message || 'Registration failed');
-            }
-        } catch (error) {
-            alert('Failed to connect to the server.');
-        }
-    });
-
-    // Login
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-
-        try {
-            const response = await fetch('http://localhost:3000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert('Login successful!');
-                if (data.token) {
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('username', data.username || email);
-                }
-                window.location.href = "home.html"; // ✅ Redirect
-            } else {
-                alert(data.message || 'Login failed');
-            }
-        } catch (error) {
-            alert('Failed to connect to the server.');
-        }
-    });
-
-    forgetPassForm.addEventListener('')
 });
