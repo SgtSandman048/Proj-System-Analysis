@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App - Single Room</title>
+  <link rel="stylesheet" href="CSS/Chat.css">
+</head>
+<body>
+
+
+ <!-- Main Container -->
+    <div class="main-container">    
+        <!-- Review Header -->
+        <div class="review-header">
+            <div class="review-title">
+                <i class="fas fa-star"></i>
+                <span>Chat</span>
+            </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <div class="image-modal-content">
+            <button class="modal-close" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+                
+            </button>
+            <img id="modalImage" class="modal-image" src="" alt="">
+        </div>
+    </div>
+            <div class="review-actions">
+                <button class="review-btn" onclick="openReviewModal()">
+                    <i class="fas fa-star"></i>
+                    <span>เขียนรีวิว</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <main class="chat-area">
+
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will be populated by JavaScript -->
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <i class="fas fa-user-circle"></i>
+                <span id="typingUser">ผู้ขาย</span>
+                <span>กำลังพิมพ์</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="image-preview-container" id="imagePreview"></div>
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            class="input-field" 
+                            placeholder="พิมพ์ข้อความ..."
+                            rows="1"
+                            maxlength="2000"
+                        ></textarea>
+                        <div class="input-actions">
+                            <label for="fileInput" class="input-btn" title="แนบรูปภาพ">
+                                <i class="far fa-image"></i>
+                                <span>upload</span>
+                            </label>
+                            <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+                        </div>
+                    </div>
+                </div>
+                <button id="sendBtn" class="send-btn">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="review-modal">
+        <div class="review-modal-content">
+            <h2>เขียนรีวิวสินค้า</h2>
+            
+            <div class="rating-section">
+                <p>ให้คะแนนสินค้า</p>
+                <div class="star-rating" id="starRating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <p id="ratingText">กรุณาให้คะแนน</p>
+            </div>
+
+            <div class="review-text-section">
+                <textarea 
+                    id="reviewText" 
+                    class="review-textarea" 
+                    placeholder="เขียนความคิดเห็นเกี่ยวกับสินค้า..."
+                ></textarea>
+            </div>
+
+            <div class="review-actions">
+                <button class="btn btn-cancel" onclick="closeReviewModal()">ยกเลิก</button>
+                <button class="btn btn-submit" onclick="submitReview()">ส่งรีวิว</button>
+            </div>
+        </div>
+    </div>
+
+  <script src="Js/Chat.js"></script>
+</body>
+</html>

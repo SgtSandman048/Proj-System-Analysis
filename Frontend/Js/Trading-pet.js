@@ -799,7 +799,19 @@ function setupRealTimeUpdates() {
 }
 
 function openChat(type, itemName) {
-    alert(`Opening chat for ${type} request: ${itemName}\n\nThis will be implemented with your chat system later.`);
+    // Store chat context in localStorage for the chat page to use
+    const chatContext = {
+        type: type,           // 'buy' or 'sell'
+        itemName: itemName,   // name of the item
+        game: 'PetSimulator', // specify the game
+        timestamp: new Date().toISOString()
+    };
+    
+    // Store the context so the chat page can access it
+    localStorage.setItem('chatContext', JSON.stringify(chatContext));
+    
+    // Redirect to chat page
+    window.location.href = 'Chat.html';
 }
 
 // UI Helper functions
