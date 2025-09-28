@@ -482,6 +482,7 @@ body {
     display: flex;
     justify-content: center;
     margin: 30px 0;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .search-container {
@@ -528,6 +529,7 @@ body {
     width: 35%;
     max-width: 1200px;
     margin-top: 20px;
+    animation: fadeIn 0.8s ease-out;
 }
 
 .market-container {
