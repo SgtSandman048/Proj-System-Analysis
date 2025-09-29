@@ -9,6 +9,9 @@ const createTradeItem = async (req, res) => {
     const tradeData = req.body;
     const newTradeItem = await tradeService.createTrade(tradeData);
     
+    console.log(`Created ${newTradeItem.type} item request id ${newTradeItem._id}`);
+    console.log(`Added request to ${newTradeItem.game} marketplace`);
+    
     res.status(201).json({
       message: "Trade item created successfully",
       data: newTradeItem

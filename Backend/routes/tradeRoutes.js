@@ -9,7 +9,11 @@ router.post("/trades", tradeController.createTradeItem);
 router.get("/trades", async (req, res) => {
     try {
         const Trade = require("../models/Item");
-        const trades = await Trade.find().sort({ createdAt: -1 }); // Get latest first
+        const { q } = req.query; // Get search query from search bar
+        const filter = q
+            ? { item: { $regex: q, $options: "i" } } // Search the item
+            : {};
+        const trades = await Trade.find(filter).sort({ createdAt: -1 }); // Get latest first
         res.json(trades);
     } catch (error) {
         res.status(500).json({
@@ -47,3 +51,4 @@ router.delete('/trades/:id', async (req, res) => {
 });
 
 module.exports = router;
+console.log("Trade Routes Status: Ready");

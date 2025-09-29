@@ -61,3 +61,4 @@ router.put('/', async (req, res) => {
 });
 
 module.exports = router;
+console.log("Profile Routes Status: Ready");
