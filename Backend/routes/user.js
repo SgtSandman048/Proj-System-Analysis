@@ -24,5 +24,10 @@ router.put('/resetpassword/:token', userController.resetPassword);
 // @access  Public
 router.post('/updatepassword', userController.updatePassword);
 
+// @route   DELETE /api/user/delete
+// @desc    Delete user account
+// @access  Private (requires a token)
+router.delete('/delete', auth, userController.deleteAccount);
+
 module.exports = router;
 console.log(`Users Routes Status: Ready`);

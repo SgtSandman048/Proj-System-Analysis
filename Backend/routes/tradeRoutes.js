@@ -19,4 +19,31 @@ router.get("/trades", async (req, res) => {
     }
 });
 
+router.delete('/trades/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Find and delete the trade item
+        const deletedTrade = await Trade.findByIdAndDelete(id);
+        
+        if (!deletedTrade) {
+            return res.status(404).json({ 
+                message: 'Trade item not found' 
+            });
+        }
+        
+        res.status(200).json({ 
+            message: 'Trade item deleted successfully',
+            data: deletedTrade
+        });
+        
+    } catch (error) {
+        console.error('Error deleting trade item:', error);
+        res.status(500).json({ 
+            message: 'Error deleting trade item',
+            error: error.message 
+        });
+    }
+});
+
 module.exports = router;

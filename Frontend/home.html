@@ -10,7 +10,6 @@
     <header class="header">
         <div class="logo">
             <img src="images/lastlogoSA.png" alt="Logo" class="logo-icon">
-            
         </div>
         <nav class="nav-items">
             <img src="images/bell.png" alt="Notifications" class="nav-icon">
@@ -18,17 +17,24 @@
                 <img src="images/shopping-cart.png" alt="Market" class="nav-item-icon">
                 Market
             </a>
-            <div class = "menu-user">
-            <div class ="topic"></div>
-            <a href="index.html" class="nav-item">
-                <img src="images/user.png" alt="Sign In" class="menu-item-icon">
-                Sign In
-            <div class = "submenu">
-                    <div class = "list"><a href ="Setting.html"><img src="images/settings.png " alt="Setting" class = "nav-item-icon"></a><div style="position: absolute;top: -2px; left: 20px;">Settings</div> </div>
-                    <div class = "list"><a href ="#"></a>Sign out</div>
-                </div>
-            </a>
-        </div>
+            <div class="menu-user">
+                <div class="topic"></div>
+                <a href="#" class="nav-item" id="user-menu-link">
+                    <img src="images/user.png" alt="User" class="menu-item-icon">
+                    <span id="username-display">User</span>
+                    <div class="submenu">
+                        <div class="list">
+                            <a href="Setting.html">
+                                <img src="images/settings.png" alt="Setting" class="nav-item-icon">
+                            </a>
+                            <div style="position: absolute;top: -2px; left: 20px;">Settings</div>
+                        </div>
+                        <div class="list">
+                            <a href="#" id="signout-btn">Sign out</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
             <a href="#" class="contact-btn">Contact</a>
         </nav>
     </header>
@@ -40,23 +46,20 @@
                 <div class="game-card">
                     <div class="game-image">
                         <a href="Trading-growagarden.html" class="game-card-link">
-                        <img src="images/growgardenlogo.png" alt="Grow a Garden" class="game-thumbnail">
-                        <div class="game-overlay">
-                        </div>
+                            <img src="images/growgardenlogo.png" alt="Grow a Garden" class="game-thumbnail">
+                            <div class="game-overlay"></div>
                         </a>
                     </div>
                     <div class="game-info">
                         <h3 class="game-title">Grow a Garden</h3>
                     </div>
                 </div>
-                </a>
 
                 <div class="game-card">
                     <div class="game-image">
                         <a href="Trading-pet.html" class="game-card-link">
-                        <img src="images/petsimlogo.png" alt="Pet Simulator" class="game-thumbnail">
-                        <div class="game-overlay">
-                        </div>
+                            <img src="images/petsimlogo.png" alt="Pet Simulator" class="game-thumbnail">
+                            <div class="game-overlay"></div>
                         </a>
                     </div>
                     <div class="game-info">
@@ -68,6 +71,38 @@
     </main>
 
     <script>
+        // Check authentication and display username
+        function initUserMenu() {
+            const token = localStorage.getItem('authToken');
+            const username = localStorage.getItem('username');
+            
+            if (!token) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Display username in the menu
+            const usernameDisplay = document.getElementById('username-display');
+            if (username && usernameDisplay) {
+                usernameDisplay.textContent = username;
+            }
+        }
+
+        // Sign out functionality
+        document.getElementById('signout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const confirmSignOut = confirm('Are you sure you want to sign out?');
+            if (confirmSignOut) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('username');
+                window.location.href = "index.html";
+            }
+        });
+
+        // Initialize user menu on page load
+        initUserMenu();
+
         // Add interactive hover effects
         const gameCards = document.querySelectorAll('.game-card');
         const heroCtaBtn = document.querySelector('.hero-cta-btn');
@@ -75,14 +110,12 @@
         gameCards.forEach(card => {
             card.addEventListener('click', () => {
                 const gameTitle = card.querySelector('.game-title').textContent;
-                
             });
         });
 
         // Hero CTA Button Click Event
         if (heroCtaBtn) {
             heroCtaBtn.addEventListener('click', () => {
-                // เลื่อนลงไปยังส่วนเกม
                 document.querySelector('.games-section').scrollIntoView({
                     behavior: 'smooth'
                 });
@@ -102,9 +135,6 @@
                 }
             });
         });
-         if (!localStorage.getItem('authToken')) {
-        window.location.href = "index.html";
-        }
     </script>
 </body>
 </html>

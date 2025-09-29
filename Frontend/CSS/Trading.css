@@ -1238,7 +1238,7 @@ body {
     left: 2px;
     width: 121px; /* ความกว้าง: (width / 2) - (2*margin) */
     height: 36px;
-    background-color: #00a130; /* สีของ slider */
+    background-color: #ff5656; /* สีของ slider */
     border-radius: 18px; 
     transition: transform 0.4s, background-color 0.4s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -1248,7 +1248,7 @@ body {
 .toggle-input:checked + .toggle-label .slider {
     /* เลื่อนไปทางขวา: width - slider-width - (2*margin) */
     transform: translateX(126px); 
-    background-color: #ff5656; /* สีของ slider เมื่อเป็น "want buy" */
+    background-color: #00a130; /* สีของ slider เมื่อเป็น "want buy" */
 }
 
 .toggle-input:checked + .toggle-label .left-label {
