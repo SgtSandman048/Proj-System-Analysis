@@ -912,7 +912,7 @@ body {
 }
 
 .new-sell-btn.active {
-    background: #ef4444;
+    background: #10b981;
     color: white;
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
@@ -927,8 +927,8 @@ body {
 }
 
 .new-buy-btn.active {
-    background: #10b981;
-    color: white;
+    background: #ef4444;
+    color: rgb(41, 11, 11);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
