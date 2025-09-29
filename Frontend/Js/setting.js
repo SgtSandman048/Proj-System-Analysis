@@ -124,6 +124,74 @@ async function displayAccountInfo() {
   document.getElementById('delete-btn').addEventListener('click', handleDeleteAccount);
 }
 
+// ดึง trade history ของ user
+async function fetchTradeHistory(userId) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/tradeHistory/user/${userId}`);
+    if (!res.ok) throw new Error('Failed to fetch trade history');
+    return await res.json();
+  } catch (err) {
+    console.error('Error fetching trade history:', err);
+    return [];
+  }
+}
+
+// แสดงผล trade history
+function displayTradeHistory(tradeHistory) {
+  const container = document.getElementById('trade-history-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  if (!tradeHistory || tradeHistory.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: #aaa; padding: 20px;">
+        No trade history found 📝
+      </div>
+    `;
+    return;
+  }
+
+  tradeHistory.forEach(trade => {
+    const statusClass = trade.status === 'success' 
+      ? 'success' 
+      : trade.status === 'support' 
+        ? 'support' 
+        : '';
+
+    const dateObj = new Date(trade.date);
+    const formattedDate = dateObj.toLocaleString('th-TH', { 
+      dateStyle: 'short', 
+      timeStyle: 'short' 
+    });
+
+    const tradeItem = document.createElement('div');
+    tradeItem.className = 'order-item';
+    tradeItem.innerHTML = `
+      <div class="order-date">${formattedDate}</div>
+      <div class="order-details">
+        <div class="item-info">
+          <img src="${trade.imageUrl || 'images/default-item.png'}" alt="${trade.itemName}" class="item-image">
+          <div class="item-details">
+            <h3 class="item-name">${trade.itemName}</h3>
+            <div class="item-price">${trade.price} 💰</div>
+            <div class="item-duration">${trade.type === 'buy' ? 'Bought' : 'Sold'} ×${trade.quantity}</div>
+          </div>
+        </div>
+        <button class="status-btn ${statusClass}">
+          ${trade.status.charAt(0).toUpperCase() + trade.status.slice(1)}
+        </button>
+      </div>
+      <div class="order-footer">
+        <span class="platform-icon">📦</span>
+        <span class="platform-name">${trade.game}</span>
+      </div>
+    `;
+
+    container.appendChild(tradeItem);
+  });
+}
+
 // ฟังก์ชันจัดการ Logout
 function handleLogout(e) {
   e.preventDefault();
@@ -168,6 +236,15 @@ async function handleDeleteAccount() {
 
 // เรียกใช้งานเมื่อโหลดหน้าเสร็จ
 document.addEventListener("DOMContentLoaded", displayAccountInfo);
+
+// เรียกใช้เมื่อโหลดหน้า
+document.addEventListener('DOMContentLoaded', async () => {
+  // ดึง userId จาก localStorage (หรือ token)
+  const userId = localStorage.getItem('userId') || 'guest';
+  
+  const history = await fetchTradeHistory(userId);
+  displayTradeHistory(history);
+});
 
 // เรียกใช้งาน
 initMenuToggle(".menu", ".section");
