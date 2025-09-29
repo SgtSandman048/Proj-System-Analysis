@@ -610,9 +610,12 @@ async function createTradeItem(tradeData) {
 }
 
 // Fetch market data with better error handling
-async function fetchMarketData() {
+async function fetchMarketData(searchQuery = '') {
     try {
-        const response = await fetch(`${API_BASE_URL}/item/trades`, {
+        const url = searchQuery 
+            ? `${API_BASE_URL}/item/trades?q=${encodeURIComponent(searchQuery)}` // Search market data
+            : `${API_BASE_URL}/item/trades`;
+        const response = await fetch(url, {
             method: 'GET',
             headers: { 
                 'Content-Type': 'application/json',
@@ -880,6 +883,36 @@ document.addEventListener('click', function(e) {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closePlaceOrderModal();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', async () => {
+            const query = searchInput.value.trim();
+            const result = await fetchMarketData(query);
+            if (result.success) {
+                displayMarketItems(result.data);
+            } else {
+                showErrorMessage('Failed to search items');
+            }
+        });
+
+        // Enter to search item
+        searchInput.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                const result = await fetchMarketData(query);
+                if (result.success) {
+                    displayMarketItems(result.data);
+                } else {
+                    showErrorMessage('Failed to search items');
+                }
+            }
+        });
     }
 });
 
