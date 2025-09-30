@@ -526,6 +526,7 @@ function getFormData() {
     const itemInput = document.getElementById('newItemInput');
     const priceInput = document.getElementById('newPriceInput');
     const quantityInput = document.getElementById('newQuantityInput');
+    const username = localStorage.getItem('username') || 'Guest';
     
     return {
         type: currentMode,
@@ -534,7 +535,8 @@ function getFormData() {
         price: priceInput ? parseFloat(priceInput.value) : 0,
         quantity: quantityInput ? parseInt(quantityInput.value) : 0,
         imageUrl: getItemImageUrl(itemInput ? itemInput.value.trim() : ''),
-        uploadedImages: uploadedImages
+        uploadedImages: uploadedImages,
+        createdBy: username
     };
 }
 
@@ -764,7 +766,7 @@ function createItemElement(item, type) {
             <div class="item-time">${timeAgo}</div>
             <div class="seller-info">
                 <div class="seller-avatar"></div>
-                <span>Trainer_${Math.random().toString(36).substr(2, 8)}</span>
+                <span>${item.createdBy || 'Guest'}</span>
             </div>
         </div>
         <button class="chat-btn" onclick="openChat('${type}', '${item.item}')">Chat</button>
