@@ -6,7 +6,12 @@ const createTradeItem = async (req, res) => {
     console.log('Received request body size:', JSON.stringify(req.body).length);
     console.log('Upload images count:', req.body.uploadedImages ? req.body.uploadedImages.length : 0);
     
-    const tradeData = req.body;
+    const userId = req.user.id;
+    const tradeData = {
+      ...req.body,
+      owner: userId
+    };
+    
     const newTradeItem = await tradeService.createTrade(tradeData);
     
     console.log(`Created ${newTradeItem.type} item request id ${newTradeItem._id}`);
