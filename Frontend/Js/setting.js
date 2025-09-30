@@ -125,9 +125,9 @@ async function displayAccountInfo() {
 }
 
 // ดึง trade history ของ user
-async function fetchTradeHistory(userId) {
+async function fetchTradeHistory(username) {
   try {
-    const res = await fetch(`http://localhost:3000/api/tradeHistory/user/${userId}`);
+    const res = await fetch(`http://localhost:3000/api/tradeHistory/user/${username}`);
     if (!res.ok) throw new Error('Failed to fetch trade history');
     return await res.json();
   } catch (err) {
@@ -241,8 +241,8 @@ document.addEventListener("DOMContentLoaded", displayAccountInfo);
 document.addEventListener('DOMContentLoaded', async () => {
   // ดึง userId จาก localStorage (หรือ token)
 
-  const token = localStorage.getItem('authToken');
-  console.log(token);
+  const token = localStorage.getItem('username');
+   console.log(token); // For testing purpose only
   
   const history = await fetchTradeHistory(token);
   displayTradeHistory(history);

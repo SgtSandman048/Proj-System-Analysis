@@ -276,6 +276,7 @@ body {
 
 .list{
     line-height: 40px;
+    text-decoration: none;
 }
 
 .submenu{
@@ -284,6 +285,14 @@ body {
     top: 50px;
     background-color: #1a1a1a;
     width: 7%;
+    color: #fff;
+}
+
+.menu-item {
+    color: #fff;
+}
+
+.menu-item:visited {
     color: #fff;
 }
 

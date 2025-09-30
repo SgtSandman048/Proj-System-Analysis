@@ -7,7 +7,7 @@ const TradeHistory = require('../models/TradeHistory');
 router.post('/create', async (req, res) => {
     try {
         const { 
-            userId, 
+            //userId, 
             username,
             itemName, 
             price, 
@@ -26,7 +26,7 @@ router.post('/create', async (req, res) => {
         }
 
         const newHistory = new TradeHistory({
-            userId: userId || 'guest',
+            // userId: userId || 'guest',
             username: username || 'Guest User',
             itemName,
             price,
@@ -55,11 +55,11 @@ router.post('/create', async (req, res) => {
 });
 
 // Get trade history for a user
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:username', async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { username } = req.params;
 
-        const history = await TradeHistory.find({ userId })
+        const history = await TradeHistory.find({ username })
             .sort({ date: -1 })
             .limit(50);
 

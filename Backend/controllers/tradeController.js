@@ -6,15 +6,17 @@ const createTradeItem = async (req, res) => {
     console.log('Received request body size:', JSON.stringify(req.body).length);
     console.log('Upload images count:', req.body.uploadedImages ? req.body.uploadedImages.length : 0);
     
-    const userId = req.user.id;
+    const userId = req.user?.id || 'guest-id';
+    const username = req.user?.username || req.body.createdBy || 'Guest';
     const tradeData = {
       ...req.body,
-      owner: userId
+      owner: userId,
+      createdBy: username
     };
     
     const newTradeItem = await tradeService.createTrade(tradeData);
     
-    console.log(`Created ${newTradeItem.type} item request id ${newTradeItem._id}`);
+    console.log(`Created ${newTradeItem.type} item request id ${newTradeItem._id} by ${username}`);
     console.log(`Added request to ${newTradeItem.game} marketplace`);
     
     res.status(201).json({

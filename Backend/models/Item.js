@@ -14,7 +14,8 @@ const TradeSchema = new mongoose.Schema({
     size: Number,
     uploadedAt: String
   }],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  createdBy: { type: String, required: true },
 });
 
 module.exports = mongoose.model("Trade", TradeSchema);

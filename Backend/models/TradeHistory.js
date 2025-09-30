@@ -2,11 +2,11 @@
 const mongoose = require('mongoose');
 
 const TradeHistorySchema = new mongoose.Schema({
-    userId: {
+    /*userId: {
         type: String,
         default: 'guest',
         index: true
-    },
+    },*/
     username: {
         type: String,
         default: 'Guest User'

@@ -35,9 +35,12 @@ function initializeApp() {
     const currentState = document.getElementById('current-state');
     
     if (toggle && currentState) {
+        currentMode = toggle.checked ? 'buy' : 'sell';
+        currentState.textContent = `Current Mode: ${currentMode === 'buy' ? 'Buy' : 'Sell'}`;
+
         toggle.addEventListener('change', function() {
             currentMode = this.checked ? 'buy' : 'sell';
-            currentState.textContent = `Current Mode: Want ${currentMode === 'sell' ? 'Sell' : 'Buy'}`;
+            currentState.textContent = `Current Mode: ${currentMode === 'buy' ? 'Buy' : 'Sell'}`;
         });
     }
 }
