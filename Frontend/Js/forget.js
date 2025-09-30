@@ -1,6 +1,4 @@
-// forget.js - JavaScript for password reset functionality
-// Configuration - Update this URL to match your backend
-const API_BASE_URL = 'http://localhost:3000/api'; // Change this to your backend URL
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // State management for the reset process
 let resetToken = null;
