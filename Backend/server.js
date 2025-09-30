@@ -35,7 +35,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use("/api/item", tradeRoutes);
-app.use('/api/tradehistory', tradeHistoryRoutes); // ADD THIS LINE
+app.use('/api/tradeHistory', tradeHistoryRoutes); // ADD THIS LINE
 
 // Create the HTTP server from the Express app
 const server = http.createServer(app);

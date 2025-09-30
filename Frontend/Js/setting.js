@@ -240,9 +240,11 @@ document.addEventListener("DOMContentLoaded", displayAccountInfo);
 // เรียกใช้เมื่อโหลดหน้า
 document.addEventListener('DOMContentLoaded', async () => {
   // ดึง userId จาก localStorage (หรือ token)
-  const userId = localStorage.getItem('userId') || 'guest';
+
+  const token = localStorage.getItem('authToken');
+  console.log(token);
   
-  const history = await fetchTradeHistory(userId);
+  const history = await fetchTradeHistory(token);
   displayTradeHistory(history);
 });
 
