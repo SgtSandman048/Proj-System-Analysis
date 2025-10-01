@@ -3,14 +3,14 @@ class BuyerSellerChatApp {
                 this.currentUser = {
                     id: 1,
                     username: 'buyer',
-                    fullname: 'ผู้ซื้อ',
+                    fullname: 'User',
                     role: 'buyer'
                 };
                 
                 this.seller = {
                     id: 2,
                     username: 'store',
-                    fullname: 'sellerkub',
+                    fullname: 'User',
                     role: 'seller'
                 };
                 
@@ -271,11 +271,14 @@ class BuyerSellerChatApp {
                 const lowerMessage = buyerMessage.toLowerCase();
                 
                 // Product inquiries
+                if (lowerMessage.includes('มีสินค้าครับ') ) {
+                    return "ชื่อ @SERGENT_SANDMAN ครับ บช.มา";
+                }
                 if (lowerMessage.includes('สนใจอยากเทรด') ) {
                     return "ชื่อ roblox...เลขบัญชี.....ธนาคาร........ ครับ";
                 }
                 
-                if (lowerMessage.includes('ชื่อ roblox...เลขบัญชี.....ธนาคาร........ ครับ') || lowerMessage.includes('สีไหน')) {
+                if (lowerMessage.includes('เลขบัญชี xxxxxxxxxx ธนาคาร xxx ครับ') || lowerMessage.includes('สีไหน')) {
                     return {
                         type: 'image',
                         text: "โอนแล้วครับ",
@@ -283,7 +286,7 @@ class BuyerSellerChatApp {
                     };
                 }
                 
-                if (lowerMessage.includes('โอนละครับ') || lowerMessage.includes('จัดส่ง')) {
+                if (lowerMessage.includes('โอนละครับ') || lowerMessage.includes('โอนแล้วครับ')) {
                     return "โอเคครับ ส่งขอองแล้วนะครับ";
                 }
                 
@@ -497,9 +500,7 @@ class BuyerSellerChatApp {
                         setTimeout(() => {
                             let sellerResponseText = '';
                             
-                            if (chatContext.type === 'sell') {
-                                sellerResponseText = `สวัสดีครับ! สนใจ "${chatContext.itemName}"`;
-                            }
+                            
                             
                             const sellerMessage = {
                                 id: Date.now() + 1,
